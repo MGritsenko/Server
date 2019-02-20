@@ -39,12 +39,18 @@
     <ClCompile Include="mainwindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="clientslistwidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="server.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="mainwindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="clientslistwidget.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -58,6 +64,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="ui\server.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="clientslistwidget.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
