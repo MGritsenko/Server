@@ -1,5 +1,8 @@
 #include "mainwindow.h"
 
+#include "server.h"
+#include "clientslistwidget.h"
+
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 {
@@ -10,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 	connect(m_ui.actionStartServer, &QAction::triggered, this, &MainWindow::createConnection);
 	connect(m_ui.actionStopServer, &QAction::triggered, this, &MainWindow::closeConnection);
+	connect(m_ui.actionClientsList, &QAction::triggered, this, &MainWindow::showClientsList);
 
 	connect(m_ui.actionExit, &QAction::triggered, this, &MainWindow::close);
 }
@@ -18,6 +22,12 @@ void MainWindow::createConnection()
 {
 	m_server.reset(new Server());
 	m_server->show();
+}
+
+void MainWindow::showClientsList()
+{
+	m_clientsListWidget.reset(new ClientsListWidget());
+	m_clientsListWidget->show();
 }
 
 void MainWindow::closeConnection()

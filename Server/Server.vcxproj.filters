@@ -42,6 +42,9 @@
     <ClCompile Include="clientslistwidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="models\clientslistmodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="server.h">
@@ -51,6 +54,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="clientslistwidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="models\clientslistmodel.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
