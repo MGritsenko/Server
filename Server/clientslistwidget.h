@@ -3,6 +3,8 @@
 #include <QWidget>
 namespace Ui { class ClientsListWidget; };
 
+class ClientsListModel;
+
 class ClientsListWidget : public QWidget
 {
 	Q_OBJECT
@@ -13,4 +15,6 @@ public:
 
 private:
 	Ui::ClientsListWidget *ui;
+
+	ClientsListModel* m_model;
 };
