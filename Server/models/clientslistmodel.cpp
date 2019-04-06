@@ -2,17 +2,10 @@
 
 ClientsListModel::ClientsListModel(QObject *parent)
 	: QAbstractTableModel(parent)
-{
-	m_data.append(qMakePair(QString("one"), QString("two")));
-	m_data.append(qMakePair(QString("three"), QString("four")));
-	m_data.append(qMakePair(QString("five"), QString("six")));
-	m_data.append(qMakePair(QString("seven"), QString("eight")));
-	m_data.append(qMakePair(QString("nine"), QString("ten")));
-}
+{}
 
 ClientsListModel::~ClientsListModel()
-{
-}
+{}
 
 int ClientsListModel::rowCount(const QModelIndex &parent) const
 {
@@ -35,4 +28,13 @@ QVariant ClientsListModel::data(const QModelIndex& index, int role) const
 	}
 
 	return QVariant();
+}
+
+void ClientsListModel::insertData(QString data)
+{
+	beginInsertRows({}, m_data.size(), m_data.size());
+
+	m_data.append(qMakePair(data, data));
+
+	endInsertRows();
 }

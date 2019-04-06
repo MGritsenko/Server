@@ -9,7 +9,7 @@ Server::Server(QWidget *parent)
 
 	connect(m_server, SIGNAL(newConnection()), this, SLOT(newConnection()));
 
-	if (!m_server->listen(QHostAddress::Any, 1234))
+	if (!m_server->listen(QHostAddress::Any, 1990))
 	{
 		m_ui.serverStatusLabel->setText("Server could not start");
 	}

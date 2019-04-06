@@ -10,10 +10,16 @@ ClientsListWidget::ClientsListWidget(QWidget *parent)
 	ui->setupUi(this);
 
 	m_model =  new ClientsListModel(this);
+	ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	ui->tableView->setModel(m_model);
 }
 
 ClientsListWidget::~ClientsListWidget()
 {
 	delete ui;
+}
+
+void ClientsListWidget::insertData(QString data)
+{
+	m_model->insertData(data);
 }

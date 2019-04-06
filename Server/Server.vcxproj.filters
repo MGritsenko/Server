@@ -45,6 +45,18 @@
     <ClCompile Include="models\clientslistmodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="videograbber.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="serverthreadpool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="client.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="task.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="server.h">
@@ -57,6 +69,18 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="models\clientslistmodel.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="videograbber.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="serverthreadpool.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="client.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="task.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

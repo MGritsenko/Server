@@ -12,6 +12,7 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QFrame>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
@@ -19,6 +20,7 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -31,7 +33,12 @@ public:
     QAction *actionExit;
     QAction *actionClientsList;
     QWidget *centralwidget;
-    QWidget *widget;
+    QVBoxLayout *verticalLayout_3;
+    QHBoxLayout *horizontalLayout_2;
+    QVBoxLayout *verticalLayout;
+    QLabel *frameWindow;
+    QFrame *frame;
+    QVBoxLayout *verticalLayout_2;
     QHBoxLayout *horizontalLayout;
     QLabel *label;
     QSpacerItem *horizontalSpacer;
@@ -45,7 +52,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(800, 598);
+        MainWindow->resize(1114, 783);
         actionStartServer = new QAction(MainWindow);
         actionStartServer->setObjectName(QString::fromUtf8("actionStartServer"));
         actionStopServer = new QAction(MainWindow);
@@ -56,13 +63,40 @@ public:
         actionClientsList->setObjectName(QString::fromUtf8("actionClientsList"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
-        widget = new QWidget(centralwidget);
-        widget->setObjectName(QString::fromUtf8("widget"));
-        widget->setGeometry(QRect(20, 520, 211, 22));
-        horizontalLayout = new QHBoxLayout(widget);
+        verticalLayout_3 = new QVBoxLayout(centralwidget);
+        verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        verticalLayout = new QVBoxLayout();
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        frameWindow = new QLabel(centralwidget);
+        frameWindow->setObjectName(QString::fromUtf8("frameWindow"));
+        frameWindow->setMinimumSize(QSize(640, 480));
+        frameWindow->setFrameShape(QFrame::Box);
+        frameWindow->setFrameShadow(QFrame::Plain);
+
+        verticalLayout->addWidget(frameWindow);
+
+        frame = new QFrame(centralwidget);
+        frame->setObjectName(QString::fromUtf8("frame"));
+        frame->setFrameShape(QFrame::Box);
+
+        verticalLayout->addWidget(frame);
+
+
+        horizontalLayout_2->addLayout(verticalLayout);
+
+        verticalLayout_2 = new QVBoxLayout();
+        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
+
+        horizontalLayout_2->addLayout(verticalLayout_2);
+
+
+        verticalLayout_3->addLayout(horizontalLayout_2);
+
+        horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-        horizontalLayout->setContentsMargins(0, 0, 0, 0);
-        label = new QLabel(widget);
+        label = new QLabel(centralwidget);
         label->setObjectName(QString::fromUtf8("label"));
 
         horizontalLayout->addWidget(label);
@@ -71,15 +105,18 @@ public:
 
         horizontalLayout->addItem(horizontalSpacer);
 
-        label_2 = new QLabel(widget);
+        label_2 = new QLabel(centralwidget);
         label_2->setObjectName(QString::fromUtf8("label_2"));
 
         horizontalLayout->addWidget(label_2);
 
+
+        verticalLayout_3->addLayout(horizontalLayout);
+
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 800, 26));
+        menubar->setGeometry(QRect(0, 0, 1114, 26));
         menuNetwork = new QMenu(menubar);
         menuNetwork->setObjectName(QString::fromUtf8("menuNetwork"));
         menuFile = new QMenu(menubar);
@@ -94,7 +131,6 @@ public:
         menuNetwork->addAction(actionStartServer);
         menuNetwork->addAction(actionStopServer);
         menuNetwork->addSeparator();
-        menuNetwork->addAction(actionClientsList);
         menuFile->addAction(actionExit);
 
         retranslateUi(MainWindow);
@@ -109,6 +145,7 @@ public:
         actionStopServer->setText(QApplication::translate("MainWindow", "Stop server", nullptr));
         actionExit->setText(QApplication::translate("MainWindow", "Exit", nullptr));
         actionClientsList->setText(QApplication::translate("MainWindow", "Clients list", nullptr));
+        frameWindow->setText(QString());
         label->setText(QApplication::translate("MainWindow", "Clients connected", nullptr));
         label_2->setText(QApplication::translate("MainWindow", "0", nullptr));
         menuNetwork->setTitle(QApplication::translate("MainWindow", "Network", nullptr));
