@@ -30,7 +30,9 @@ private slots:
 	void closeVideoGrabber();
 
 	void onDataReady(QByteArray data);
-	void receiveFrame(QPixmap frame);
+	void receiveFrame(QPixmap frame, QByteArray data);
+
+	void sendDataTCP(QByteArray data, QString client);
 
 private:
 	Ui::MainWindow m_ui;

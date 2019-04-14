@@ -118,13 +118,9 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="models\clientslistmodel.cpp" />
-    <ClCompile Include="server.cpp" />
     <ClCompile Include="serverthreadpool.cpp" />
     <ClCompile Include="task.cpp" />
     <ClCompile Include="videograbber.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="server.h" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="server.qrc" />

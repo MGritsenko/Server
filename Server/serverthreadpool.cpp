@@ -20,9 +20,25 @@ void ServerThreadPool::startServer()
 	}
 }
 
+void ServerThreadPool::sendDataTCP(QByteArray& data, QString& receiver)
+{
+	if (m_clients.contains(receiver))
+	{
+		m_clients.value(receiver)->sendDataTCP(data);
+	}
+}
+
 void ServerThreadPool::incomingConnection(qintptr handle)
 {
-	Client* client = new Client(this);
-	connect(client, &Client::sendData, this, &ServerThreadPool::dataReady);
-	client->setSocket(handle);
+	const QString key = "name";
+
+	//if (!m_clients.contains(key))
+	{
+		Client* client = new Client(this);
+		m_clients[key] = client;
+
+		connect(client, &Client::sendData, this, &ServerThreadPool::dataReady);
+
+		client->setSocket(handle);
+	}
 }

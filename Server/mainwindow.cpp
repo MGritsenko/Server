@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 
-#include "server.h"
 #include "serverthreadpool.h"
 #include "clientslistwidget.h"
 #include "videograbber.h"
@@ -35,9 +34,27 @@ void MainWindow::onDataReady(QByteArray data)
 	m_clientsListWidget->insertData(data);
 }
 
-void MainWindow::receiveFrame(QPixmap frame)
+void MainWindow::receiveFrame(QPixmap frame, QByteArray data)
 {
 	m_ui.frameWindow->setPixmap(frame);
+
+	sendDataTCP(data, QString("name"));
+}
+
+void MainWindow::sendDataTCP(QByteArray data, QString client)
+{
+	if (!m_server)
+	{
+		return;
+	}
+
+
+	if (!m_server->isListening())
+	{
+		return;
+	}
+
+	//m_server->sendDataTCP(data, client);
 }
 
 void MainWindow::closeConnection()

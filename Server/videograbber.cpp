@@ -1,6 +1,7 @@
 #include "videograbber.h"
 
 #include <QDebug>
+#include<QBuffer>
 
 VideoGrabber::VideoGrabber(QObject *parent, int device)
 	: QObject(parent)
@@ -38,7 +39,13 @@ void VideoGrabber::grabFrame()
 
 	QImage img(outframe.data, outframe.cols, outframe.rows, QImage::Format::Format_RGB888);
 
-	emit sendFrame(QPixmap::fromImage(img));
+	auto pixmap = QPixmap::fromImage(img);
+	QByteArray bArray;
+	//QBuffer buffer(&bArray);
+	//buffer.open(QIODevice::WriteOnly);
+	//pixmap.save(&buffer, "PNG");
+
+	emit sendFrame(pixmap, bArray);
 }
 
 void VideoGrabber::process(cv::Mat& outframe)

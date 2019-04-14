@@ -21,7 +21,7 @@ private:
 	void process(cv::Mat& frame);
 
 signals:
-	void sendFrame(QPixmap);
+	void sendFrame(QPixmap, QByteArray);
 
 private:
 	cv::VideoCapture* m_videoCapture;

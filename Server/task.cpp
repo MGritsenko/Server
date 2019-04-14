@@ -1,5 +1,7 @@
 #include "task.h"
 
+#include <QRandomGenerator>
+
 Task::Task(): QRunnable()
 {
 }
@@ -10,12 +12,7 @@ Task::~Task()
 
 void Task::run()
 {
-	int number = 0;
+	auto value = static_cast<int>(QRandomGenerator::global()->generate());
 
-	for (int i = 0; i < 100; i++)
-	{
-		number = i;
-	}
-
-	emit result(number);
+	emit result(value);
 }

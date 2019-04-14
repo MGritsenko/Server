@@ -15,7 +15,7 @@ public:
 	~Client();
 
 	void setSocket(int descriptor);
-
+	bool sendDataTCP(QByteArray& data);
 	Q_SIGNAL void sendData(QByteArray);
 
 public slots:
@@ -25,5 +25,12 @@ public slots:
 	void taskResult(int number);
 
 private:
-	QTcpSocket* m_socket;
+	QAbstractSocket::SocketState createOutConnection();
+	void resetConnection(QTcpSocket* socket);
+	QAbstractSocket::SocketState getSocketOutState();
+	QTcpSocket* getSocketOut() const;
+
+private:
+	QTcpSocket* m_socketOut;
+	QTcpSocket* m_socketIn;
 };
