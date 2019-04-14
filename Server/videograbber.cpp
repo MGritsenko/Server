@@ -41,9 +41,9 @@ void VideoGrabber::grabFrame()
 
 	auto pixmap = QPixmap::fromImage(img);
 	QByteArray bArray;
-	//QBuffer buffer(&bArray);
-	//buffer.open(QIODevice::WriteOnly);
-	//pixmap.save(&buffer, "PNG");
+	QBuffer buffer(&bArray);
+	buffer.open(QIODevice::WriteOnly);
+	pixmap.save(&buffer, "PNG");
 
 	emit sendFrame(pixmap, bArray);
 }

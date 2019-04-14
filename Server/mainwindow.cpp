@@ -54,7 +54,7 @@ void MainWindow::sendDataTCP(QByteArray data, QString client)
 		return;
 	}
 
-	//m_server->sendDataTCP(data, client);
+	m_server->sendDataTCP(data, client);
 }
 
 void MainWindow::closeConnection()
