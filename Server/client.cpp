@@ -23,6 +23,8 @@ void Client::setSocket(int descriptor)
 
 	m_socketIn->setSocketDescriptor(descriptor);
 
+	//m_Id = m_socketIn->peerAddress().toString();
+
 	qDebug() << "Client connected";
 }
 
@@ -56,6 +58,11 @@ bool Client::sendDataTCP(QByteArray& data)
 	}
 
 	return true;
+}
+
+QString Client::getId() const
+{
+	return m_Id;
 }
 
 void Client::connected()

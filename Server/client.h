@@ -18,6 +18,8 @@ public:
 	bool sendDataTCP(QByteArray& data);
 	Q_SIGNAL void sendData(QByteArray);
 
+	QString getId() const;
+
 public slots:
 	void connected();
 	void disconnected();
@@ -33,4 +35,6 @@ private:
 private:
 	QTcpSocket* m_socketOut;
 	QTcpSocket* m_socketIn;
+
+	QString m_Id;
 };

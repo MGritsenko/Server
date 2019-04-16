@@ -12,7 +12,6 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QFrame>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
@@ -37,7 +36,6 @@ public:
     QHBoxLayout *horizontalLayout_2;
     QVBoxLayout *verticalLayout;
     QLabel *frameWindow;
-    QFrame *frame;
     QVBoxLayout *verticalLayout_2;
     QHBoxLayout *horizontalLayout;
     QLabel *label;
@@ -76,12 +74,6 @@ public:
         frameWindow->setFrameShadow(QFrame::Plain);
 
         verticalLayout->addWidget(frameWindow);
-
-        frame = new QFrame(centralwidget);
-        frame->setObjectName(QString::fromUtf8("frame"));
-        frame->setFrameShape(QFrame::Box);
-
-        verticalLayout->addWidget(frame);
 
 
         horizontalLayout_2->addLayout(verticalLayout);

@@ -38,13 +38,6 @@
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QFrame" name="frame">
-          <property name="frameShape">
-           <enum>QFrame::Box</enum>
-          </property>
-         </widget>
-        </item>
        </layout>
       </item>
       <item>
