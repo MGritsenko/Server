@@ -38,7 +38,7 @@ void MainWindow::receiveFrame(QPixmap frame, QByteArray data)
 {
 	m_ui.frameWindow->setPixmap(frame);
 
-	sendDataTCP(data, QString("name"));
+	sendDataTCP(data, "192.168.0.28");
 }
 
 void MainWindow::sendDataTCP(QByteArray data, QString client)

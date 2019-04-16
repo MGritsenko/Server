@@ -4,8 +4,7 @@
 #include <QTcpSocket>
 #include <QAbstractSocket>
 #include <QMap>
-
-class Client;
+#include <QPair>
 
 class ServerThreadPool : public QTcpServer
 {
@@ -15,15 +14,19 @@ public:
 	ServerThreadPool(QObject *parent = nullptr);
 	~ServerThreadPool();
 
-	void startServer();
+	void startServer(int port = 64499);
 	void sendDataTCP(QByteArray& data, QString& receiver);
+	QMap<QString, QHostAddress>* getClients() const;
 
-	Q_SIGNAL void dataReady(QByteArray);
+signals:
+	void dataReady(QByteArray);
 
-protected:
-	virtual void incomingConnection(qintptr handle) override;
+public slots:
+	void newIncomingConnection();
 
 private:
-	QMap<QString, Client*> m_clients;
+	std::unique_ptr<QMap<QString, QHostAddress>> m_clients;
+
+	int m_port;
 };
  

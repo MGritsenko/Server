@@ -1,44 +1,59 @@
 #include "serverthreadpool.h"
-#include "client.h"
 
 ServerThreadPool::ServerThreadPool(QObject *parent)
 	: QTcpServer(parent)
-{}
+{
+	m_clients = std::make_unique<QMap<QString, QHostAddress>>();
+}
 
 ServerThreadPool::~ServerThreadPool()
 {}
 
-void ServerThreadPool::startServer()
+void ServerThreadPool::startServer(int port)
 {
-	if (listen(QHostAddress::Any, 64499))
+	m_port = port;
+	if (!listen(QHostAddress::Any, m_port))
 	{
-		qDebug() << "Server started";
+		close();
+		return;
 	}
-	else
-	{
-		qDebug() << "Not started";
-	}
+
+	connect(this, &QTcpServer::newConnection, this, &ServerThreadPool::newIncomingConnection);
 }
 
 void ServerThreadPool::sendDataTCP(QByteArray& data, QString& receiver)
 {
-	if (m_clients.contains(receiver))
+	if (!m_clients || m_clients->isEmpty())
 	{
-		m_clients.value(receiver)->sendDataTCP(data);
+		return;
 	}
+
+	QTcpSocket *outSoc = new QTcpSocket;
+	outSoc->connectToHost(m_clients->begin().value(), m_port);
+	outSoc->waitForConnected();
+	outSoc->write(data);
+	outSoc->waitForBytesWritten();
+	outSoc->disconnectFromHost();
+
+	delete outSoc;
 }
 
-void ServerThreadPool::incomingConnection(qintptr handle)
+QMap<QString, QHostAddress>* ServerThreadPool::getClients() const
 {
-	const QString key = "name";
+	return m_clients.get();
+}
 
-	//if (!m_clients.contains(key))
+void ServerThreadPool::newIncomingConnection()
+{
+	QTcpSocket *inSoc = nextPendingConnection();
+
+	connect(inSoc, &QAbstractSocket::disconnected, inSoc, &QObject::deleteLater);
+	connect(inSoc, &QAbstractSocket::readyRead, this, [&, inSoc]()
 	{
-		Client* client = new Client(this);
-		m_clients[key] = client;
+		auto data = inSoc->readAll();
+		m_clients->insert(QString(data), inSoc->peerAddress());
+		inSoc->disconnectFromHost();
 
-		connect(client, &Client::sendData, this, &ServerThreadPool::dataReady);
-
-		client->setSocket(handle);
-	}
+		emit dataReady(data);
+	});
 }
