@@ -1,18 +1,38 @@
 #include "task.h"
 
-#include <QRandomGenerator>
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
 
-Task::Task(): QRunnable()
-{
-}
+#include <QPixmap>
+#include <QBuffer>
+
+Task::Task(int width, int height)
+	: QRunnable()
+	, m_width(width)
+	, m_height(height)
+{}
 
 Task::~Task()
-{
-}
+{}
 
 void Task::run()
 {
-	auto value = static_cast<int>(QRandomGenerator::global()->generate());
+	cv::Mat img1(m_height, m_width, CV_8UC3, cv::Scalar(255, 0, 0));
+	cv::rectangle
+	(
+		img1
+		, cv::Point(0, 0)
+		, cv::Point(m_width / 2, m_height)
+		, cv::Scalar(0, 255, 0)
+		, cv::LineTypes::FILLED
+	);
 
-	emit result(value);
+	QImage img(img1.data, img1.cols, img1.rows, QImage::Format::Format_RGB888);
+	auto pixmap = QPixmap::fromImage(img);
+	QByteArray bArray;
+	QBuffer buffer(&bArray);
+	buffer.open(QIODevice::WriteOnly);
+	pixmap.save(&buffer, "JPG");
+
+	emit result(bArray);
 }

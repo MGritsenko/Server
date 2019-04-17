@@ -8,12 +8,16 @@ class Task : public QObject,  public QRunnable
 	Q_OBJECT
 
 public:
-	Task();
+	Task(int width, int height);
 	~Task();
 
 signals:
-	void result(int number);
+	void result(QByteArray data);
 
 protected:
 	virtual void run() override;
+
+private:
+	int m_width;
+	int m_height;
 };

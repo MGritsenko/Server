@@ -3,13 +3,19 @@
 #include "serverthreadpool.h"
 #include "clientslistwidget.h"
 #include "videograbber.h"
+#include "task.h"
+
+#include <QThreadPool>
+#include <QBuffer>
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
+	, m_isDoneSetup(false)
 {
 	init();
 	initVideoGrabber();
 	initClientsList();
+	initSetUpBlock();
 }
 
 void MainWindow::createConnection()
@@ -31,6 +37,7 @@ void MainWindow::closeVideoGrabber()
 
 void MainWindow::onDataReady(QByteArray data)
 {
+	m_ui.clientsBox->addItem(data);
 	m_clientsListWidget->insertData(data);
 }
 
@@ -39,8 +46,10 @@ void MainWindow::receiveFrame(QPixmap frame, QByteArray data)
 	m_ui.frameWindow->setPixmap(frame);
 
 	//TODO cut image on pieces which depend of quantity of connected clients
-
-	sendDataTCP(data, "receiver");
+	if (m_isDoneSetup)
+	{
+		sendDataTCP(data, "receiver");
+	}
 }
 
 void MainWindow::sendDataTCP(QByteArray data, QString client)
@@ -57,6 +66,22 @@ void MainWindow::sendDataTCP(QByteArray data, QString client)
 	}
 
 	m_server->sendDataTCP(data, client);
+}
+
+void MainWindow::setUpClient()
+{
+	auto receiverIp = m_ui.clientsBox->currentText();
+	auto command = m_ui.commandsBox->currentText();
+
+	Task* task = new Task(1080, 1920);
+	task->setAutoDelete(true);
+	connect(task, &Task::result, this, [&, receiverIp](QByteArray data)
+	{
+		sendDataTCP(data, receiverIp);
+	}
+	, Qt::QueuedConnection);
+
+	QThreadPool::globalInstance()->start(task);
 }
 
 void MainWindow::closeConnection()
@@ -108,4 +133,10 @@ void MainWindow::initClientsList()
 {
 	m_clientsListWidget.reset(new ClientsListWidget());
 	m_ui.horizontalLayout_2->addWidget(m_clientsListWidget.get());
+}
+
+void MainWindow::initSetUpBlock()
+{
+	m_ui.commandsBox->addItem(QString::number(static_cast<int>(CommandType::SEND_IDENT_IMG)));
+	connect(m_ui.sendButton, &QPushButton::clicked, this, &MainWindow::setUpClient);
 }

@@ -6,10 +6,14 @@
 
 #include "ui_mainwindow.h"
 
-class Server;
 class ServerThreadPool;
 class ClientsListWidget;
 class VideoGrabber;
+
+enum class CommandType
+{
+	SEND_IDENT_IMG
+};
 
 class MainWindow : public QMainWindow
 {
@@ -23,6 +27,7 @@ private:
 	void init();
 	void initVideoGrabber();
 	void initClientsList();
+	void initSetUpBlock();
 
 private slots:
 	void closeConnection();
@@ -33,6 +38,8 @@ private slots:
 	void receiveFrame(QPixmap frame, QByteArray data);
 
 	void sendDataTCP(QByteArray data, QString client);
+	
+	void setUpClient();
 
 private:
 	Ui::MainWindow m_ui;
@@ -42,4 +49,6 @@ private:
 	std::unique_ptr<VideoGrabber> m_videoGrabberWorker;
 	std::unique_ptr<QThread> m_thread;
 	std::unique_ptr<QTimer> m_timer;
+
+	bool m_isDoneSetup;
 };
