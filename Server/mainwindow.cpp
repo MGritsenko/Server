@@ -38,7 +38,9 @@ void MainWindow::receiveFrame(QPixmap frame, QByteArray data)
 {
 	m_ui.frameWindow->setPixmap(frame);
 
-	sendDataTCP(data, "192.168.0.28");
+	//TODO cut image on pieces which depend of quantity of connected clients
+
+	sendDataTCP(data, "receiver");
 }
 
 void MainWindow::sendDataTCP(QByteArray data, QString client)
@@ -105,7 +107,5 @@ void MainWindow::initVideoGrabber()
 void MainWindow::initClientsList()
 {
 	m_clientsListWidget.reset(new ClientsListWidget());
-	m_ui.verticalLayout_2->addWidget(m_clientsListWidget.get());
-
-	m_ui.verticalLayout_2->addWidget(new ClientsListWidget());
+	m_ui.horizontalLayout_2->addWidget(m_clientsListWidget.get());
 }

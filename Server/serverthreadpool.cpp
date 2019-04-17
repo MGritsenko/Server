@@ -51,9 +51,10 @@ void ServerThreadPool::newIncomingConnection()
 	connect(inSoc, &QAbstractSocket::readyRead, this, [&, inSoc]()
 	{
 		auto data = inSoc->readAll();
-		m_clients->insert(QString(data), inSoc->peerAddress());
+		auto ip = inSoc->peerAddress();
+		m_clients->insert(QString(data), ip);
 		inSoc->disconnectFromHost();
 
-		emit dataReady(data);
+		emit dataReady(ip.toString().toUtf8());
 	});
 }

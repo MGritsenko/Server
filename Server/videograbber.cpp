@@ -15,8 +15,6 @@ VideoGrabber::VideoGrabber(QObject *parent, int device)
 
 VideoGrabber::~VideoGrabber()
 {
-	m_videoCapture->release();
-
 	delete m_videoCapture;
 }
 
