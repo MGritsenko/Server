@@ -16,7 +16,7 @@ public:
 
 	void startServer(int port = 64499);
 	void sendDataTCP(QByteArray& data, QString& receiver);
-	QMap<QString, QHostAddress>* getClients() const;
+	QMap<QString, QPair<QHostAddress, int>>* getClients() const;
 
 signals:
 	void dataReady(QByteArray);
@@ -25,8 +25,9 @@ public slots:
 	void newIncomingConnection();
 
 private:
-	std::unique_ptr<QMap<QString, QHostAddress>> m_clients;
+	std::unique_ptr<QMap<QString, QPair<QHostAddress, int>>> m_clients;
 
 	int m_port;
+	QTcpSocket* m_outSoc;
 };
  

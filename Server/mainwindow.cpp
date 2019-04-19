@@ -4,6 +4,7 @@
 #include "clientslistwidget.h"
 #include "videograbber.h"
 #include "task.h"
+#include "findpatterntask.h"
 
 #include <QThreadPool>
 #include <QBuffer>
@@ -45,8 +46,9 @@ void MainWindow::receiveFrame(QPixmap frame, QByteArray data)
 {
 	m_ui.frameWindow->setPixmap(frame);
 
-	//TODO cut image on pieces which depend of quantity of connected clients
-	if (m_isDoneSetup)
+	findPattern(frame);
+
+	//if (m_isDoneSetup)
 	{
 		sendDataTCP(data, "receiver");
 	}
@@ -78,6 +80,19 @@ void MainWindow::setUpClient()
 	connect(task, &Task::result, this, [&, receiverIp](QByteArray data)
 	{
 		sendDataTCP(data, receiverIp);
+	}
+	, Qt::QueuedConnection);
+
+	QThreadPool::globalInstance()->start(task);
+}
+
+void MainWindow::findPattern(QPixmap img)
+{
+	FindPatternTask* task = new FindPatternTask(img);
+	task->setAutoDelete(true);
+	connect(task, &FindPatternTask::result, this, [&](QPixmap img)
+	{
+		m_ui.alphaWindow->setPixmap(img);
 	}
 	, Qt::QueuedConnection);
 
@@ -132,7 +147,7 @@ void MainWindow::initVideoGrabber()
 void MainWindow::initClientsList()
 {
 	m_clientsListWidget.reset(new ClientsListWidget());
-	m_ui.horizontalLayout_2->addWidget(m_clientsListWidget.get());
+	m_ui.clientsListLayout->addWidget(m_clientsListWidget.get());
 }
 
 void MainWindow::initSetUpBlock()

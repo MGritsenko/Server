@@ -41,6 +41,8 @@ private slots:
 	
 	void setUpClient();
 
+	void findPattern(QPixmap img);
+
 private:
 	Ui::MainWindow m_ui;
 

@@ -35,10 +35,10 @@ public:
     QAction *actionExit;
     QAction *actionClientsList;
     QWidget *centralwidget;
-    QVBoxLayout *verticalLayout_4;
-    QHBoxLayout *horizontalLayout_2;
     QVBoxLayout *verticalLayout;
+    QHBoxLayout *horizontalLayout_2;
     QLabel *frameWindow;
+    QLabel *alphaWindow;
     QFrame *line;
     QHBoxLayout *horizontalLayout_5;
     QVBoxLayout *verticalLayout_3;
@@ -50,7 +50,8 @@ public:
     QComboBox *commandsBox;
     QPushButton *sendButton;
     QSpacerItem *horizontalSpacer_2;
-    QSpacerItem *verticalSpacer;
+    QFrame *line_2;
+    QHBoxLayout *clientsListLayout;
     QHBoxLayout *horizontalLayout;
     QLabel *label;
     QSpacerItem *horizontalSpacer;
@@ -64,7 +65,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(1114, 783);
+        MainWindow->resize(1076, 766);
         actionStartServer = new QAction(MainWindow);
         actionStartServer->setObjectName(QString::fromUtf8("actionStartServer"));
         actionStopServer = new QAction(MainWindow);
@@ -75,32 +76,42 @@ public:
         actionClientsList->setObjectName(QString::fromUtf8("actionClientsList"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
-        verticalLayout_4 = new QVBoxLayout(centralwidget);
-        verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
-        horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
-        verticalLayout = new QVBoxLayout();
+        verticalLayout = new QVBoxLayout(centralwidget);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setSpacing(0);
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        horizontalLayout_2->setSizeConstraint(QLayout::SetMinimumSize);
         frameWindow = new QLabel(centralwidget);
         frameWindow->setObjectName(QString::fromUtf8("frameWindow"));
-        frameWindow->setMinimumSize(QSize(640, 480));
+        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(frameWindow->sizePolicy().hasHeightForWidth());
+        frameWindow->setSizePolicy(sizePolicy);
         frameWindow->setFrameShape(QFrame::Box);
         frameWindow->setFrameShadow(QFrame::Plain);
 
-        verticalLayout->addWidget(frameWindow);
+        horizontalLayout_2->addWidget(frameWindow);
+
+        alphaWindow = new QLabel(centralwidget);
+        alphaWindow->setObjectName(QString::fromUtf8("alphaWindow"));
+        sizePolicy.setHeightForWidth(alphaWindow->sizePolicy().hasHeightForWidth());
+        alphaWindow->setSizePolicy(sizePolicy);
+        alphaWindow->setMinimumSize(QSize(0, 320));
+        alphaWindow->setFrameShape(QFrame::Box);
+
+        horizontalLayout_2->addWidget(alphaWindow);
 
 
-        horizontalLayout_2->addLayout(verticalLayout);
-
-
-        verticalLayout_4->addLayout(horizontalLayout_2);
+        verticalLayout->addLayout(horizontalLayout_2);
 
         line = new QFrame(centralwidget);
         line->setObjectName(QString::fromUtf8("line"));
         line->setFrameShape(QFrame::HLine);
         line->setFrameShadow(QFrame::Sunken);
 
-        verticalLayout_4->addWidget(line);
+        verticalLayout->addWidget(line);
 
         horizontalLayout_5 = new QHBoxLayout();
         horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
@@ -149,11 +160,19 @@ public:
         horizontalLayout_5->addItem(horizontalSpacer_2);
 
 
-        verticalLayout_4->addLayout(horizontalLayout_5);
+        verticalLayout->addLayout(horizontalLayout_5);
 
-        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        line_2 = new QFrame(centralwidget);
+        line_2->setObjectName(QString::fromUtf8("line_2"));
+        line_2->setFrameShape(QFrame::HLine);
+        line_2->setFrameShadow(QFrame::Sunken);
 
-        verticalLayout_4->addItem(verticalSpacer);
+        verticalLayout->addWidget(line_2);
+
+        clientsListLayout = new QHBoxLayout();
+        clientsListLayout->setObjectName(QString::fromUtf8("clientsListLayout"));
+
+        verticalLayout->addLayout(clientsListLayout);
 
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
@@ -172,12 +191,12 @@ public:
         horizontalLayout->addWidget(label_2);
 
 
-        verticalLayout_4->addLayout(horizontalLayout);
+        verticalLayout->addLayout(horizontalLayout);
 
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1114, 26));
+        menubar->setGeometry(QRect(0, 0, 1076, 26));
         menuNetwork = new QMenu(menubar);
         menuNetwork->setObjectName(QString::fromUtf8("menuNetwork"));
         menuFile = new QMenu(menubar);
@@ -207,6 +226,7 @@ public:
         actionExit->setText(QApplication::translate("MainWindow", "Exit", nullptr));
         actionClientsList->setText(QApplication::translate("MainWindow", "Clients list", nullptr));
         frameWindow->setText(QString());
+        alphaWindow->setText(QString());
         label_3->setText(QApplication::translate("MainWindow", "Client", nullptr));
         label_4->setText(QApplication::translate("MainWindow", "Command", nullptr));
         sendButton->setText(QApplication::translate("MainWindow", "Send", nullptr));

@@ -2,12 +2,15 @@
 
 ServerThreadPool::ServerThreadPool(QObject *parent)
 	: QTcpServer(parent)
+	, m_outSoc(nullptr)
 {
-	m_clients = std::make_unique<QMap<QString, QHostAddress>>();
+	m_clients = std::make_unique<QMap<QString, QPair<QHostAddress, int>>>();
 }
 
 ServerThreadPool::~ServerThreadPool()
-{}
+{
+	delete m_outSoc;
+}
 
 void ServerThreadPool::startServer(int port)
 {
@@ -28,17 +31,23 @@ void ServerThreadPool::sendDataTCP(QByteArray& data, QString& receiver)
 		return;
 	}
 
-	QTcpSocket *outSoc = new QTcpSocket;
-	outSoc->connectToHost(m_clients->begin().value(), m_port);
-	outSoc->waitForConnected();
-	outSoc->write(data);
-	outSoc->waitForBytesWritten();
-	outSoc->disconnectFromHost();
+	if (m_outSoc == nullptr)
+	{
+		m_outSoc = new QTcpSocket;
+	}
+	m_outSoc->connectToHost
+	(
+		m_clients->begin().value().first
+		, 64499//m_clients->begin().value().second
+	);
 
-	delete outSoc;
+	m_outSoc->waitForConnected();
+	m_outSoc->write(data);
+	m_outSoc->waitForBytesWritten();
+	m_outSoc->disconnectFromHost();
 }
 
-QMap<QString, QHostAddress>* ServerThreadPool::getClients() const
+QMap<QString, QPair<QHostAddress, int>>* ServerThreadPool::getClients() const
 {
 	return m_clients.get();
 }
@@ -52,7 +61,11 @@ void ServerThreadPool::newIncomingConnection()
 	{
 		auto data = inSoc->readAll();
 		auto ip = inSoc->peerAddress();
-		m_clients->insert(QString(data), ip);
+		auto port = inSoc->peerPort();
+		if (!m_clients->contains(data))
+		{
+			m_clients->insert(QString(data), qMakePair(ip, port));
+		}
 		inSoc->disconnectFromHost();
 
 		emit dataReady(ip.toString().toUtf8());
