@@ -45,6 +45,12 @@ void MainWindow::onDataReady(QByteArray data)
 void MainWindow::receiveFrame(QPixmap frame, QByteArray data)
 {
 	m_ui.frameWindow->setPixmap(frame);
+	QPixmap scaled = frame.scaled(m_ui.redWindow->width(), m_ui.redWindow->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
+	m_ui.redWindow->setPixmap(scaled);
+	m_ui.greenWindow->setPixmap(scaled);
+
+	QLabel *label = new QLabel(this);
+	label->setPixmap(scaled);
 
 	findPattern(frame);
 
@@ -115,7 +121,8 @@ void MainWindow::findPattern(QPixmap img)
 	task->setAutoDelete(true);
 	connect(task, &FindPatternTask::result, this, [&](QPixmap img)
 	{
-		m_ui.alphaWindow->setPixmap(img);
+		//m_ui.redWindow->setPixmap(img);
+		//m_ui.greenWindow->setPixmap(img);
 	}
 	, Qt::QueuedConnection);
 

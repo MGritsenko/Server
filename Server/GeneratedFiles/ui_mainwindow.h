@@ -14,6 +14,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QFrame>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
@@ -36,10 +37,12 @@ public:
     QAction *actionExit;
     QAction *actionClientsList;
     QWidget *centralwidget;
-    QVBoxLayout *verticalLayout_8;
+    QVBoxLayout *verticalLayout_6;
     QHBoxLayout *horizontalLayout_2;
     QLabel *frameWindow;
-    QLabel *alphaWindow;
+    QGridLayout *gridLayout;
+    QLabel *redWindow;
+    QLabel *greenWindow;
     QFrame *line_2;
     QHBoxLayout *horizontalLayout_17;
     QVBoxLayout *verticalLayout_5;
@@ -101,7 +104,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(1076, 767);
+        MainWindow->resize(1041, 812);
         actionStartServer = new QAction(MainWindow);
         actionStartServer->setObjectName(QString::fromUtf8("actionStartServer"));
         actionStopServer = new QAction(MainWindow);
@@ -112,42 +115,51 @@ public:
         actionClientsList->setObjectName(QString::fromUtf8("actionClientsList"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
-        verticalLayout_8 = new QVBoxLayout(centralwidget);
-        verticalLayout_8->setObjectName(QString::fromUtf8("verticalLayout_8"));
+        verticalLayout_6 = new QVBoxLayout(centralwidget);
+        verticalLayout_6->setObjectName(QString::fromUtf8("verticalLayout_6"));
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setSpacing(0);
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
-        horizontalLayout_2->setSizeConstraint(QLayout::SetMinimumSize);
         frameWindow = new QLabel(centralwidget);
         frameWindow->setObjectName(QString::fromUtf8("frameWindow"));
-        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(frameWindow->sizePolicy().hasHeightForWidth());
-        frameWindow->setSizePolicy(sizePolicy);
         frameWindow->setFrameShape(QFrame::Box);
         frameWindow->setFrameShadow(QFrame::Plain);
+        frameWindow->setWordWrap(true);
 
         horizontalLayout_2->addWidget(frameWindow);
 
-        alphaWindow = new QLabel(centralwidget);
-        alphaWindow->setObjectName(QString::fromUtf8("alphaWindow"));
-        sizePolicy.setHeightForWidth(alphaWindow->sizePolicy().hasHeightForWidth());
-        alphaWindow->setSizePolicy(sizePolicy);
-        alphaWindow->setMinimumSize(QSize(0, 320));
-        alphaWindow->setFrameShape(QFrame::Box);
+        gridLayout = new QGridLayout();
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+        gridLayout->setHorizontalSpacing(0);
+        redWindow = new QLabel(centralwidget);
+        redWindow->setObjectName(QString::fromUtf8("redWindow"));
+        redWindow->setMinimumSize(QSize(0, 320));
+        redWindow->setMaximumSize(QSize(320, 16777215));
+        redWindow->setFrameShape(QFrame::Box);
+        redWindow->setWordWrap(true);
 
-        horizontalLayout_2->addWidget(alphaWindow);
+        gridLayout->addWidget(redWindow, 0, 0, 1, 1);
+
+        greenWindow = new QLabel(centralwidget);
+        greenWindow->setObjectName(QString::fromUtf8("greenWindow"));
+        greenWindow->setMaximumSize(QSize(320, 16777215));
+        greenWindow->setFrameShape(QFrame::Box);
+        greenWindow->setWordWrap(true);
+
+        gridLayout->addWidget(greenWindow, 0, 1, 1, 1);
 
 
-        verticalLayout_8->addLayout(horizontalLayout_2);
+        horizontalLayout_2->addLayout(gridLayout);
+
+
+        verticalLayout_6->addLayout(horizontalLayout_2);
 
         line_2 = new QFrame(centralwidget);
         line_2->setObjectName(QString::fromUtf8("line_2"));
         line_2->setFrameShape(QFrame::HLine);
         line_2->setFrameShadow(QFrame::Sunken);
 
-        verticalLayout_8->addWidget(line_2);
+        verticalLayout_6->addWidget(line_2);
 
         horizontalLayout_17 = new QHBoxLayout();
         horizontalLayout_17->setObjectName(QString::fromUtf8("horizontalLayout_17"));
@@ -413,14 +425,14 @@ public:
         horizontalLayout_17->addLayout(verticalLayout_4);
 
 
-        verticalLayout_8->addLayout(horizontalLayout_17);
+        verticalLayout_6->addLayout(horizontalLayout_17);
 
         line_3 = new QFrame(centralwidget);
         line_3->setObjectName(QString::fromUtf8("line_3"));
         line_3->setFrameShape(QFrame::HLine);
         line_3->setFrameShadow(QFrame::Sunken);
 
-        verticalLayout_8->addWidget(line_3);
+        verticalLayout_6->addWidget(line_3);
 
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
@@ -439,7 +451,7 @@ public:
         horizontalLayout->addWidget(label_2);
 
 
-        verticalLayout_8->addLayout(horizontalLayout);
+        verticalLayout_6->addLayout(horizontalLayout);
 
         MainWindow->setCentralWidget(centralwidget);
         statusbar = new QStatusBar(MainWindow);
@@ -447,7 +459,7 @@ public:
         MainWindow->setStatusBar(statusbar);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1076, 26));
+        menubar->setGeometry(QRect(0, 0, 1041, 26));
         menuNetwork = new QMenu(menubar);
         menuNetwork->setObjectName(QString::fromUtf8("menuNetwork"));
         menuFile = new QMenu(menubar);
@@ -474,7 +486,8 @@ public:
         actionExit->setText(QApplication::translate("MainWindow", "Exit", nullptr));
         actionClientsList->setText(QApplication::translate("MainWindow", "Clients list", nullptr));
         frameWindow->setText(QString());
-        alphaWindow->setText(QString());
+        redWindow->setText(QString());
+        greenWindow->setText(QString());
         label_8->setText(QApplication::translate("MainWindow", "From", nullptr));
         label_5->setText(QApplication::translate("MainWindow", "B", nullptr));
         blueFromValLabel->setText(QApplication::translate("MainWindow", "0", nullptr));
