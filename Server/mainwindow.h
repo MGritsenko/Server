@@ -28,6 +28,7 @@ private:
 	void initVideoGrabber();
 	void initClientsList();
 	void initSetUpBlock();
+	void initColorRangeBlock();
 
 private slots:
 	void closeConnection();

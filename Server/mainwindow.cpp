@@ -48,7 +48,7 @@ void MainWindow::receiveFrame(QPixmap frame, QByteArray data)
 
 	findPattern(frame);
 
-	//if (m_isDoneSetup)
+	if (m_isDoneSetup)
 	{
 		sendDataTCP(data, "receiver");
 	}
@@ -88,7 +88,30 @@ void MainWindow::setUpClient()
 
 void MainWindow::findPattern(QPixmap img)
 {
-	FindPatternTask* task = new FindPatternTask(img);
+	QColor from = QColor(m_ui.redFromSlider->value(), m_ui.greenFromSlider->value(), m_ui.blueFromSlider->value());
+	QColor to = QColor(m_ui.redToSlider->value(), m_ui.greenToSlider->value(), m_ui.blueToSlider->value());
+	QPalette paletteFrom = QPalette(from);
+	m_ui.fromColor->setAutoFillBackground(true);
+	m_ui.fromColor->setPalette(paletteFrom);
+	QPalette paletteTo = QPalette(to);
+	m_ui.toColor->setAutoFillBackground(true);
+	m_ui.toColor->setPalette(paletteTo);
+
+	m_ui.blueFromValLabel->setText(QString::number(from.blue()));
+	m_ui.greenFromValLabel->setText(QString::number(from.green()));
+	m_ui.redFromValLabel->setText(QString::number(from.red()));
+
+	m_ui.blueToValLabel->setText(QString::number(to.blue()));
+	m_ui.greenToValLabel->setText(QString::number(to.green()));
+	m_ui.redToValLabel->setText(QString::number(to.red()));
+
+	FindPatternTask* task = new FindPatternTask
+	(
+		img
+		, cv::Scalar(from.red(), from.green(), from.blue())
+		, cv::Scalar(to.red(), to.green(), to.blue())
+	);
+
 	task->setAutoDelete(true);
 	connect(task, &FindPatternTask::result, this, [&](QPixmap img)
 	{
@@ -154,4 +177,14 @@ void MainWindow::initSetUpBlock()
 {
 	m_ui.commandsBox->addItem(QString::number(static_cast<int>(CommandType::SEND_IDENT_IMG)));
 	connect(m_ui.sendButton, &QPushButton::clicked, this, &MainWindow::setUpClient);
+}
+
+void MainWindow::initColorRangeBlock()
+{
+	/*connect(m_ui.redFromSlider, &QSlider::valueChanged, this, &MainWindow::setUpClient);
+	connect(m_ui.greenFromSlider, &QSlider::valueChanged, this, &MainWindow::setUpClient);
+	connect(m_ui.blueFromSlider, &QSlider::valueChanged, this, &MainWindow::setUpClient);
+	connect(m_ui.redToSlider, &QSlider::valueChanged, this, &MainWindow::setUpClient);
+	connect(m_ui.greenToSlider, &QSlider::valueChanged, this, &MainWindow::setUpClient);
+	connect(m_ui.blueToSlider, &QSlider::valueChanged, this, &MainWindow::setUpClient);*/
 }
