@@ -16,11 +16,11 @@ class FindPatternTask : public QObject, public QRunnable
 	Q_OBJECT
 
 public:
-	FindPatternTask(QPixmap image, cv::Scalar from, cv::Scalar to);
+	FindPatternTask(QPixmap image, cv::Scalar fromR, cv::Scalar toR, cv::Scalar fromG, cv::Scalar toG);
 	~FindPatternTask();
 
 signals:
-	void result(QPixmap);
+	void result(QPixmap, QPixmap);
 
 protected:
 	virtual void run() override;
@@ -31,6 +31,8 @@ private:
 
 private:
 	QPixmap m_image;
-	cv::Scalar m_from;
-	cv::Scalar m_to;
+	cv::Scalar m_fromG;
+	cv::Scalar m_toG;
+	cv::Scalar m_fromR;
+	cv::Scalar m_toR;
 };

@@ -5,6 +5,7 @@
 #include "videograbber.h"
 #include "task.h"
 #include "findpatterntask.h"
+#include "slidertabwidget.h"
 
 #include <QThreadPool>
 #include <QBuffer>
@@ -17,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
 	initVideoGrabber();
 	initClientsList();
 	initSetUpBlock();
+	initTabWidget();
 }
 
 void MainWindow::createConnection()
@@ -45,12 +47,9 @@ void MainWindow::onDataReady(QByteArray data)
 void MainWindow::receiveFrame(QPixmap frame, QByteArray data)
 {
 	m_ui.frameWindow->setPixmap(frame);
-	QPixmap scaled = frame.scaled(m_ui.redWindow->width(), m_ui.redWindow->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
+	/*QPixmap scaled = frame.scaled(m_ui.redWindow->width(), m_ui.redWindow->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
 	m_ui.redWindow->setPixmap(scaled);
-	m_ui.greenWindow->setPixmap(scaled);
-
-	QLabel *label = new QLabel(this);
-	label->setPixmap(scaled);
+	m_ui.greenWindow->setPixmap(scaled);*/
 
 	findPattern(frame);
 
@@ -94,35 +93,27 @@ void MainWindow::setUpClient()
 
 void MainWindow::findPattern(QPixmap img)
 {
-	QColor from = QColor(m_ui.redFromSlider->value(), m_ui.greenFromSlider->value(), m_ui.blueFromSlider->value());
-	QColor to = QColor(m_ui.redToSlider->value(), m_ui.greenToSlider->value(), m_ui.blueToSlider->value());
-	QPalette paletteFrom = QPalette(from);
-	m_ui.fromColor->setAutoFillBackground(true);
-	m_ui.fromColor->setPalette(paletteFrom);
-	QPalette paletteTo = QPalette(to);
-	m_ui.toColor->setAutoFillBackground(true);
-	m_ui.toColor->setPalette(paletteTo);
-
-	m_ui.blueFromValLabel->setText(QString::number(from.blue()));
-	m_ui.greenFromValLabel->setText(QString::number(from.green()));
-	m_ui.redFromValLabel->setText(QString::number(from.red()));
-
-	m_ui.blueToValLabel->setText(QString::number(to.blue()));
-	m_ui.greenToValLabel->setText(QString::number(to.green()));
-	m_ui.redToValLabel->setText(QString::number(to.red()));
-
+	QColor fromR = QColor(m_redTabWidget->getFromColor());
+	QColor toR = QColor(m_redTabWidget->getToColor());
+	QColor fromG = QColor(m_greenTabWidget->getFromColor());
+	QColor toG = QColor(m_greenTabWidget->getToColor());
+	
 	FindPatternTask* task = new FindPatternTask
 	(
 		img
-		, cv::Scalar(from.red(), from.green(), from.blue())
-		, cv::Scalar(to.red(), to.green(), to.blue())
+		, cv::Scalar(fromR.red(), fromR.green(), fromR.blue())
+		, cv::Scalar(toR.red(), toR.green(), toR.blue())
+		, cv::Scalar(fromG.red(), fromG.green(), fromG.blue())
+		, cv::Scalar(toG.red(), toG.green(), toG.blue())
 	);
 
 	task->setAutoDelete(true);
-	connect(task, &FindPatternTask::result, this, [&](QPixmap img)
+	connect(task, &FindPatternTask::result, this, [&](QPixmap red, QPixmap green)
 	{
-		//m_ui.redWindow->setPixmap(img);
-		//m_ui.greenWindow->setPixmap(img);
+		QPixmap scaledR = red.scaled(m_ui.redWindow->width(), m_ui.redWindow->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
+		m_ui.redWindow->setPixmap(scaledR);
+		QPixmap scaledG = green.scaled(m_ui.greenWindow->width(), m_ui.greenWindow->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
+		m_ui.greenWindow->setPixmap(scaledG);
 	}
 	, Qt::QueuedConnection);
 
@@ -186,12 +177,11 @@ void MainWindow::initSetUpBlock()
 	connect(m_ui.sendButton, &QPushButton::clicked, this, &MainWindow::setUpClient);
 }
 
-void MainWindow::initColorRangeBlock()
+void MainWindow::initTabWidget()
 {
-	/*connect(m_ui.redFromSlider, &QSlider::valueChanged, this, &MainWindow::setUpClient);
-	connect(m_ui.greenFromSlider, &QSlider::valueChanged, this, &MainWindow::setUpClient);
-	connect(m_ui.blueFromSlider, &QSlider::valueChanged, this, &MainWindow::setUpClient);
-	connect(m_ui.redToSlider, &QSlider::valueChanged, this, &MainWindow::setUpClient);
-	connect(m_ui.greenToSlider, &QSlider::valueChanged, this, &MainWindow::setUpClient);
-	connect(m_ui.blueToSlider, &QSlider::valueChanged, this, &MainWindow::setUpClient);*/
+	m_redTabWidget = new SliderTabWidget(this);
+	m_greenTabWidget = new SliderTabWidget(this);
+
+	m_ui.tabWidget->addTab(m_redTabWidget, "Red");
+	m_ui.tabWidget->addTab(m_greenTabWidget, "Green");
 }

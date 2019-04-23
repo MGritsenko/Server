@@ -9,6 +9,7 @@
 class ServerThreadPool;
 class ClientsListWidget;
 class VideoGrabber;
+class SliderTabWidget;
 
 enum class CommandType
 {
@@ -28,7 +29,7 @@ private:
 	void initVideoGrabber();
 	void initClientsList();
 	void initSetUpBlock();
-	void initColorRangeBlock();
+	void initTabWidget();
 
 private slots:
 	void closeConnection();
@@ -52,6 +53,9 @@ private:
 	std::unique_ptr<VideoGrabber> m_videoGrabberWorker;
 	std::unique_ptr<QThread> m_thread;
 	std::unique_ptr<QTimer> m_timer;
+
+	SliderTabWidget* m_redTabWidget;
+	SliderTabWidget* m_greenTabWidget;
 
 	bool m_isDoneSetup;
 };

@@ -1,9 +1,11 @@
 #include "findpatterntask.h"
 
-FindPatternTask::FindPatternTask(QPixmap image, cv::Scalar from, cv::Scalar to)
+FindPatternTask::FindPatternTask(QPixmap image, cv::Scalar fromR, cv::Scalar toR, cv::Scalar fromG, cv::Scalar toG)
 	: m_image(image)
-	, m_from(from)
-	, m_to(to)
+	, m_fromR(fromR)
+	, m_toR(toR)
+	, m_fromG(fromG)
+	, m_toG(toG)
 {}
 
 FindPatternTask::~FindPatternTask()
@@ -13,12 +15,16 @@ void FindPatternTask::run()
 {
 	auto matImg = qImage2mat(m_image.toImage());
 
-	cv::Mat converted;
-	inRange(matImg, m_from, m_to, converted);
+	cv::Mat convertedR;
+	inRange(matImg, m_fromR, m_toR, convertedR);
 
-	auto resImg = mat2qImage(converted).rgbSwapped();
+	cv::Mat convertedG;
+	inRange(matImg, m_fromG, m_toG, convertedG);
+
+	auto resImgR = mat2qImage(convertedR).rgbSwapped();
+	auto resImgG = mat2qImage(convertedG).rgbSwapped();
 		
-	emit result(QPixmap::fromImage(resImg));
+	emit result(QPixmap::fromImage(resImgR), QPixmap::fromImage(resImgG));
 }
 
 QImage FindPatternTask::mat2qImage(cv::Mat const& src)
