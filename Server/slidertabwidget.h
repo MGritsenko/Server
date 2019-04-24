@@ -10,7 +10,7 @@ class SliderTabWidget : public QWidget
 	Q_OBJECT
 
 public:
-	SliderTabWidget(QWidget *parent);
+	SliderTabWidget(QWidget *parent, const QVector<int>& values);
 	~SliderTabWidget();
 	
 	QColor getFromColor() const;

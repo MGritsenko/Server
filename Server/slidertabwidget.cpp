@@ -3,7 +3,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
-SliderTabWidget::SliderTabWidget(QWidget *parent)
+SliderTabWidget::SliderTabWidget(QWidget *parent, const QVector<int>& values)
 	: QWidget(parent)
 {
 	m_toBlueLabel = new QLabel("B", this);
@@ -82,6 +82,13 @@ SliderTabWidget::SliderTabWidget(QWidget *parent)
 		m_fromRedLabelVal->setText(QString::number(val));
 	});
 
+	m_fromRedSlider->setValue(values[0]);
+	m_fromGreenSlider->setValue(values[1]);
+	m_fromBlueSlider->setValue(values[2]);
+	m_toRedSlider->setValue(values[3]);
+	m_toGreenSlider->setValue(values[4]);
+	m_toBlueSlider->setValue(values[5]);
+	
 	QHBoxLayout* rL = new QHBoxLayout;
 	QHBoxLayout* gL = new QHBoxLayout;
 	QHBoxLayout* bL = new QHBoxLayout;
@@ -111,14 +118,20 @@ SliderTabWidget::SliderTabWidget(QWidget *parent)
 	bLT->addWidget(m_toBlueSlider);
 
 	QVBoxLayout* vl = new QVBoxLayout;
-	//vl->addWidget(m_fromColor);
+
+	auto* colorWidgetLayoutFrom = new QVBoxLayout;
+	m_fromColor->setLayout(colorWidgetLayoutFrom);
+	vl->addWidget(m_fromColor);
 	vl->addLayout(rL);
-	vl->addLayout(bL);
 	vl->addLayout(gL);
-	//vl->addWidget(m_toColor);
+	vl->addLayout(bL);
+
+	auto* colorWidgetLayoutTo = new QVBoxLayout;
+	m_toColor->setLayout(colorWidgetLayoutTo);
+	vl->addWidget(m_toColor);
 	vl->addLayout(rLT);
-	vl->addLayout(bLT);
 	vl->addLayout(gLT);
+	vl->addLayout(bLT);
 
 	QVBoxLayout *mainLayout = new QVBoxLayout;
 	mainLayout->addLayout(vl);
@@ -132,7 +145,7 @@ SliderTabWidget::~SliderTabWidget()
 
 QColor SliderTabWidget::getFromColor() const
 {
-	auto c = QColor(m_fromBlueSlider->value(), m_fromGreenSlider->value(), m_fromRedSlider->value());
+	auto c = QColor(m_fromRedSlider->value(), m_fromGreenSlider->value(), m_fromBlueSlider->value());
 	QPalette p(c);
 	m_fromColor->setPalette(p);
 
@@ -141,7 +154,7 @@ QColor SliderTabWidget::getFromColor() const
 
 QColor SliderTabWidget::getToColor() const
 {
-	auto c = QColor(m_toBlueSlider->value(), m_toGreenSlider->value(), m_toRedSlider->value());
+	auto c = QColor(m_toRedSlider->value(), m_toGreenSlider->value(), m_toBlueSlider->value());
 	QPalette p(c);
 	m_toColor->setPalette(p);
 

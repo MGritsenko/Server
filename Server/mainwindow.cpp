@@ -179,8 +179,8 @@ void MainWindow::initSetUpBlock()
 
 void MainWindow::initTabWidget()
 {
-	m_redTabWidget = new SliderTabWidget(this);
-	m_greenTabWidget = new SliderTabWidget(this);
+	m_redTabWidget = new SliderTabWidget(this, QVector<int>{208, 0, 0, 255, 170, 210});
+	m_greenTabWidget = new SliderTabWidget(this, QVector<int>{94, 201, 17, 141, 255, 170});
 
 	m_ui.tabWidget->addTab(m_redTabWidget, "Red");
 	m_ui.tabWidget->addTab(m_greenTabWidget, "Green");
