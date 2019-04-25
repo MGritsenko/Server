@@ -35,16 +35,16 @@ void ServerThreadPool::sendDataTCP(QByteArray& data, QString& receiver)
 	{
 		m_outSoc = new QTcpSocket;
 	}
-	m_outSoc->connectToHost
-	(
-		m_clients->begin().value().first
-		, 64499//m_clients->begin().value().second
-	);
 
-	m_outSoc->waitForConnected();
-	m_outSoc->write(data);
-	m_outSoc->waitForBytesWritten();
-	m_outSoc->disconnectFromHost();
+	if (m_clients->contains(receiver))
+	{
+		m_outSoc->connectToHost(m_clients->value(receiver).first, 64499);
+
+		m_outSoc->waitForConnected();
+		m_outSoc->write(data);
+		m_outSoc->waitForBytesWritten();
+		m_outSoc->disconnectFromHost();
+	}
 }
 
 QMap<QString, QPair<QHostAddress, int>>* ServerThreadPool::getClients() const
@@ -62,9 +62,9 @@ void ServerThreadPool::newIncomingConnection()
 		auto data = inSoc->readAll();
 		auto ip = inSoc->peerAddress();
 		auto port = inSoc->peerPort();
-		if (!m_clients->contains(data))
+		if (!m_clients->contains(ip.toString()))
 		{
-			m_clients->insert(QString(data), qMakePair(ip, port));
+			m_clients->insert(ip.toString(), qMakePair(ip, port));
 		}
 		inSoc->disconnectFromHost();
 

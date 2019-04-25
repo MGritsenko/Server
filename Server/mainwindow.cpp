@@ -47,11 +47,9 @@ void MainWindow::onDataReady(QByteArray data)
 void MainWindow::receiveFrame(QPixmap frame, QByteArray data)
 {
 	m_ui.frameWindow->setPixmap(frame);
-	/*QPixmap scaled = frame.scaled(m_ui.redWindow->width(), m_ui.redWindow->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
-	m_ui.redWindow->setPixmap(scaled);
-	m_ui.greenWindow->setPixmap(scaled);*/
 
 	findPattern(frame);
+	//TODO cut image on several pieces and send on to a particular device 
 
 	if (m_isDoneSetup)
 	{
@@ -65,7 +63,6 @@ void MainWindow::sendDataTCP(QByteArray data, QString client)
 	{
 		return;
 	}
-
 
 	if (!m_server->isListening())
 	{
@@ -150,7 +147,7 @@ void MainWindow::initVideoGrabber()
 	m_thread.reset(new QThread);
 	m_timer.reset(new QTimer);
 
-	m_timer->setInterval(1000/60);
+	m_timer->setInterval(1000/30);
 	m_videoGrabberWorker->moveToThread(m_thread.get());
 	m_timer->start();
 	m_timer->moveToThread(m_thread.get());
@@ -162,7 +159,6 @@ void MainWindow::initVideoGrabber()
 	connect(m_videoGrabberWorker.get(), &VideoGrabber::sendFrame, this, &MainWindow::receiveFrame, Qt::QueuedConnection);
 	
 	m_thread->start();
-
 }
 
 void MainWindow::initClientsList()
@@ -180,7 +176,7 @@ void MainWindow::initSetUpBlock()
 void MainWindow::initTabWidget()
 {
 	m_redTabWidget = new SliderTabWidget(this, QVector<int>{208, 0, 0, 255, 170, 210});
-	m_greenTabWidget = new SliderTabWidget(this, QVector<int>{94, 201, 17, 141, 255, 170});
+	m_greenTabWidget = new SliderTabWidget(this, QVector<int>{0, 201, 17, 141, 255, 170});
 
 	m_ui.tabWidget->addTab(m_redTabWidget, "Red");
 	m_ui.tabWidget->addTab(m_greenTabWidget, "Green");
