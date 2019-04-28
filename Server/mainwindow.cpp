@@ -51,9 +51,12 @@ void MainWindow::receiveFrame(QPixmap frame, QByteArray data)
 	findPattern(frame);
 	//TODO cut image on several pieces and send on to a particular device 
 
-	if (m_isDoneSetup)
+	//if (m_isDoneSetup)
 	{
-		sendDataTCP(data, "receiver");
+		for(auto i = 0; i < m_ui.clientsBox->count(); i++)
+		{
+			sendDataTCP(data, m_ui.clientsBox->itemText(i));
+		}
 	}
 }
 
