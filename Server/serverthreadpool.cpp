@@ -62,9 +62,9 @@ void ServerThreadPool::newIncomingConnection()
 		auto data = inSoc->readAll();
 		auto ip = inSoc->peerAddress();
 		auto port = inSoc->peerPort();
-		if (!m_clients->contains(ip.toString()))
+		//if (!m_clients->contains(ip.toString()))
 		{
-			m_clients->insert(ip.toString(), qMakePair(ip, port));
+			m_clients->operator[](ip.toString()) = qMakePair(ip, port);
 		}
 		inSoc->disconnectFromHost();
 

@@ -13,7 +13,7 @@ public:
 	ClientsListWidget(QWidget *parent = Q_NULLPTR);
 	~ClientsListWidget();
 
-	void insertData(QString data);
+	bool insertData(QString data);
 
 private:
 	Ui::ClientsListWidget *ui;

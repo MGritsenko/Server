@@ -12,6 +12,7 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
@@ -57,6 +58,7 @@ public:
     QComboBox *clientsBox;
     QComboBox *commandsBox;
     QSpacerItem *horizontalSpacer_2;
+    QCheckBox *doneSetup;
     QPushButton *sendButton;
     QFrame *line_3;
     QHBoxLayout *horizontalLayout;
@@ -187,6 +189,11 @@ public:
 
         verticalLayout_3->addLayout(horizontalLayout_3);
 
+        doneSetup = new QCheckBox(centralwidget);
+        doneSetup->setObjectName(QString::fromUtf8("doneSetup"));
+
+        verticalLayout_3->addWidget(doneSetup);
+
         sendButton = new QPushButton(centralwidget);
         sendButton->setObjectName(QString::fromUtf8("sendButton"));
 
@@ -264,6 +271,7 @@ public:
         greenWindow->setText(QString());
         label_3->setText(QApplication::translate("MainWindow", "Client", nullptr));
         label_4->setText(QApplication::translate("MainWindow", "Command", nullptr));
+        doneSetup->setText(QApplication::translate("MainWindow", "Done setup", nullptr));
         sendButton->setText(QApplication::translate("MainWindow", "Send", nullptr));
         label->setText(QApplication::translate("MainWindow", "Clients connected", nullptr));
         label_2->setText(QApplication::translate("MainWindow", "0", nullptr));

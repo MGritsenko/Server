@@ -40,8 +40,10 @@ void MainWindow::closeVideoGrabber()
 
 void MainWindow::onDataReady(QByteArray data)
 {
-	m_ui.clientsBox->addItem(data);
-	m_clientsListWidget->insertData(data);
+	if (m_clientsListWidget->insertData(data))
+	{
+		m_ui.clientsBox->addItem(data);
+	}
 }
 
 void MainWindow::receiveFrame(QPixmap frame, QByteArray data)
@@ -51,7 +53,7 @@ void MainWindow::receiveFrame(QPixmap frame, QByteArray data)
 	findPattern(frame);
 	//TODO cut image on several pieces and send on to a particular device 
 
-	//if (m_isDoneSetup)
+	if (m_isDoneSetup || m_ui.doneSetup->isChecked())
 	{
 		for(auto i = 0; i < m_ui.clientsBox->count(); i++)
 		{

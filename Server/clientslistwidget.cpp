@@ -19,7 +19,7 @@ ClientsListWidget::~ClientsListWidget()
 	delete ui;
 }
 
-void ClientsListWidget::insertData(QString data)
+bool ClientsListWidget::insertData(QString data)
 {
-	m_model->insertData(data);
+	return m_model->insertData(data);
 }

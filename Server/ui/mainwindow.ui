@@ -160,6 +160,13 @@
          </layout>
         </item>
         <item>
+         <widget class="QCheckBox" name="doneSetup">
+          <property name="text">
+           <string>Done setup</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="sendButton">
           <property name="text">
            <string>Send</string>

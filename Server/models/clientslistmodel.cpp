@@ -30,11 +30,16 @@ QVariant ClientsListModel::data(const QModelIndex& index, int role) const
 	return QVariant();
 }
 
-void ClientsListModel::insertData(QString data)
+bool ClientsListModel::insertData(QString data)
 {
-	beginInsertRows({}, m_data.size(), m_data.size());
+	if (!m_data.contains(qMakePair(data, data)))
+	{
+		beginInsertRows({}, m_data.size(), m_data.size());
+		m_data.append(qMakePair(data, data));
+		endInsertRows();
 
-	m_data.append(qMakePair(data, data));
+		return true;
+	}
 
-	endInsertRows();
+	return false;
 }
