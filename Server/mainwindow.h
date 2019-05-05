@@ -41,7 +41,8 @@ private slots:
 
 	void sendDataTCP(QByteArray data, QString client);
 	
-	void setUpClient();
+	void setUpClients();
+	void tuneClients();
 
 	void findPattern(QPixmap img);
 

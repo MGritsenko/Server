@@ -23,3 +23,8 @@ bool ClientsListWidget::insertData(QString data)
 {
 	return m_model->insertData(data);
 }
+
+int ClientsListWidget::clients() const
+{
+	return m_model->rowCount();
+}

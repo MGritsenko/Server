@@ -6,6 +6,7 @@
 #include "task.h"
 #include "findpatterntask.h"
 #include "slidertabwidget.h"
+#include "shapedetectortask.h"
 
 #include <QThreadPool>
 #include <QBuffer>
@@ -77,20 +78,41 @@ void MainWindow::sendDataTCP(QByteArray data, QString client)
 	m_server->sendDataTCP(data, client);
 }
 
-void MainWindow::setUpClient()
+void MainWindow::setUpClients()
 {
-	auto receiverIp = m_ui.clientsBox->currentText();
-	auto command = m_ui.commandsBox->currentText();
+	const auto command = m_ui.commandsBox->currentText();
 
-	Task* task = new Task(1080, 1920);
-	task->setAutoDelete(true);
-	connect(task, &Task::result, this, [&, receiverIp](QByteArray data)
+	for (int i = 0; i < m_clientsListWidget->clients(); i++)
 	{
-		sendDataTCP(data, receiverIp);
-	}
-	, Qt::QueuedConnection);
+		const auto receiverIp = m_ui.clientsBox->itemText(i);
 
-	QThreadPool::globalInstance()->start(task);
+		Task* task = new Task(1080, 1920, 0);
+		task->setAutoDelete(true);
+		connect(task, &Task::result, this, [&, receiverIp](QByteArray data)
+		{
+			sendDataTCP(data, receiverIp);
+		}
+		, Qt::QueuedConnection);
+		QThreadPool::globalInstance()->start(task);
+	}
+}
+
+void MainWindow::tuneClients()
+{
+	auto frame = m_ui.frameWindow->pixmap();
+
+	if (frame != nullptr)
+	{
+		auto* task = new ShapeDetectorTask(frame);
+		task->setAutoDelete(true);
+		connect(task, &ShapeDetectorTask::result, this, [&](QPixmap data)
+		{
+			QPixmap scaledG = data.scaled(m_ui.greenWindow->width(), m_ui.greenWindow->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
+			m_ui.greenWindow->setPixmap(scaledG);
+		}
+		, Qt::QueuedConnection);
+		QThreadPool::globalInstance()->start(task);
+	}
 }
 
 void MainWindow::findPattern(QPixmap img)
@@ -114,8 +136,8 @@ void MainWindow::findPattern(QPixmap img)
 	{
 		QPixmap scaledR = red.scaled(m_ui.redWindow->width(), m_ui.redWindow->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
 		m_ui.redWindow->setPixmap(scaledR);
-		QPixmap scaledG = green.scaled(m_ui.greenWindow->width(), m_ui.greenWindow->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
-		m_ui.greenWindow->setPixmap(scaledG);
+		//QPixmap scaledG = green.scaled(m_ui.greenWindow->width(), m_ui.greenWindow->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
+		//m_ui.greenWindow->setPixmap(scaledG);
 	}
 	, Qt::QueuedConnection);
 
@@ -175,7 +197,8 @@ void MainWindow::initClientsList()
 void MainWindow::initSetUpBlock()
 {
 	m_ui.commandsBox->addItem(QString::number(static_cast<int>(CommandType::SEND_IDENT_IMG)));
-	connect(m_ui.sendButton, &QPushButton::clicked, this, &MainWindow::setUpClient);
+	connect(m_ui.sendButton, &QPushButton::clicked, this, &MainWindow::setUpClients);
+	connect(m_ui.tuneButton, &QPushButton::clicked, this, &MainWindow::tuneClients);
 }
 
 void MainWindow::initTabWidget()

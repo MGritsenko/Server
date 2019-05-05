@@ -15,6 +15,8 @@ public:
 
 	bool insertData(QString data);
 
+	int clients() const;
+
 private:
 	Ui::ClientsListWidget *ui;
 

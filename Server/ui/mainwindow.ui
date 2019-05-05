@@ -22,6 +22,18 @@
       </property>
       <item>
        <widget class="QLabel" name="frameWindow">
+        <property name="minimumSize">
+         <size>
+          <width>640</width>
+          <height>360</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>720</width>
+          <height>360</height>
+         </size>
+        </property>
         <property name="frameShape">
          <enum>QFrame::Box</enum>
         </property>
@@ -97,7 +109,7 @@
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
@@ -167,11 +179,22 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="sendButton">
-          <property name="text">
-           <string>Send</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QPushButton" name="sendButton">
+            <property name="text">
+             <string>SEND</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="tuneButton">
+            <property name="text">
+             <string>TUNE</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>

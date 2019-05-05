@@ -45,7 +45,7 @@ public:
     QLabel *redWindow;
     QLabel *greenWindow;
     QFrame *line_2;
-    QHBoxLayout *horizontalLayout_4;
+    QHBoxLayout *horizontalLayout_5;
     QVBoxLayout *verticalLayout_5;
     QHBoxLayout *clientsListLayout;
     QVBoxLayout *verticalLayout_3;
@@ -59,7 +59,9 @@ public:
     QComboBox *commandsBox;
     QSpacerItem *horizontalSpacer_2;
     QCheckBox *doneSetup;
+    QHBoxLayout *horizontalLayout_4;
     QPushButton *sendButton;
+    QPushButton *tuneButton;
     QFrame *line_3;
     QHBoxLayout *horizontalLayout;
     QLabel *label;
@@ -92,6 +94,8 @@ public:
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
         frameWindow = new QLabel(centralwidget);
         frameWindow->setObjectName(QString::fromUtf8("frameWindow"));
+        frameWindow->setMinimumSize(QSize(640, 360));
+        frameWindow->setMaximumSize(QSize(720, 360));
         frameWindow->setFrameShape(QFrame::Box);
         frameWindow->setFrameShadow(QFrame::Plain);
         frameWindow->setWordWrap(true);
@@ -131,8 +135,8 @@ public:
 
         verticalLayout_4->addWidget(line_2);
 
-        horizontalLayout_4 = new QHBoxLayout();
-        horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
+        horizontalLayout_5 = new QHBoxLayout();
+        horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
         verticalLayout_5 = new QVBoxLayout();
         verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
         clientsListLayout = new QHBoxLayout();
@@ -141,7 +145,7 @@ public:
         verticalLayout_5->addLayout(clientsListLayout);
 
 
-        horizontalLayout_4->addLayout(verticalLayout_5);
+        horizontalLayout_5->addLayout(verticalLayout_5);
 
         verticalLayout_3 = new QVBoxLayout();
         verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
@@ -194,16 +198,26 @@ public:
 
         verticalLayout_3->addWidget(doneSetup);
 
+        horizontalLayout_4 = new QHBoxLayout();
+        horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
         sendButton = new QPushButton(centralwidget);
         sendButton->setObjectName(QString::fromUtf8("sendButton"));
 
-        verticalLayout_3->addWidget(sendButton);
+        horizontalLayout_4->addWidget(sendButton);
+
+        tuneButton = new QPushButton(centralwidget);
+        tuneButton->setObjectName(QString::fromUtf8("tuneButton"));
+
+        horizontalLayout_4->addWidget(tuneButton);
 
 
-        horizontalLayout_4->addLayout(verticalLayout_3);
+        verticalLayout_3->addLayout(horizontalLayout_4);
 
 
-        verticalLayout_4->addLayout(horizontalLayout_4);
+        horizontalLayout_5->addLayout(verticalLayout_3);
+
+
+        verticalLayout_4->addLayout(horizontalLayout_5);
 
         line_3 = new QFrame(centralwidget);
         line_3->setObjectName(QString::fromUtf8("line_3"));
@@ -272,7 +286,8 @@ public:
         label_3->setText(QApplication::translate("MainWindow", "Client", nullptr));
         label_4->setText(QApplication::translate("MainWindow", "Command", nullptr));
         doneSetup->setText(QApplication::translate("MainWindow", "Done setup", nullptr));
-        sendButton->setText(QApplication::translate("MainWindow", "Send", nullptr));
+        sendButton->setText(QApplication::translate("MainWindow", "SEND", nullptr));
+        tuneButton->setText(QApplication::translate("MainWindow", "TUNE", nullptr));
         label->setText(QApplication::translate("MainWindow", "Clients connected", nullptr));
         label_2->setText(QApplication::translate("MainWindow", "0", nullptr));
         menuNetwork->setTitle(QApplication::translate("MainWindow", "Network", nullptr));

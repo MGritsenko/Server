@@ -9,6 +9,8 @@ VideoGrabber::VideoGrabber(QObject *parent, int device)
 {
 	m_videoCapture = new cv::VideoCapture();
 	m_videoCapture->open(m_device);
+	m_videoCapture->set(cv::CAP_PROP_FRAME_WIDTH, 640);
+	m_videoCapture->set(cv::CAP_PROP_FRAME_HEIGHT, 360);
 
 	qDebug() << "Created";
 }
