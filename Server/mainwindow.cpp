@@ -88,7 +88,7 @@ void MainWindow::setUpClients()
 	{
 		const auto receiverIp = m_ui.clientsBox->itemText(i);
 
-		Task* task = new Task(1080, 1920, 0);
+		Task* task = new Task(1080, 1920, 1);
 		task->setAutoDelete(true);
 		connect(task, &Task::result, this, [&, receiverIp](QByteArray data)
 		{
@@ -184,9 +184,6 @@ void MainWindow::initSetUpBlock()
 
 void MainWindow::initTabWidget()
 {
-	m_redTabWidget = new SliderTabWidget(this, QVector<int>{208, 0, 0, 255, 170, 210});
-	m_greenTabWidget = new SliderTabWidget(this, QVector<int>{0, 201, 17, 141, 255, 170});
-
-	m_ui.tabWidget->addTab(m_redTabWidget, "Red");
-	m_ui.tabWidget->addTab(m_greenTabWidget, "Green");
+	m_redTabWidget = new SliderTabWidget(this, QVector<int>{0, 234, 0, 255, 255, 255});
+	m_ui.tabWidget->addTab(m_redTabWidget, "Green");
 }
