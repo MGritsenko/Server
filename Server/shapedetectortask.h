@@ -4,12 +4,16 @@
 #include <QRunnable>
 #include <QPixmap>
 
+#include "opencv2/core/core.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/opencv.hpp"
+
 class ShapeDetectorTask : public QObject, public QRunnable
 {
 	Q_OBJECT
 
 public:
-	ShapeDetectorTask(const QPixmap* data);
+	ShapeDetectorTask(QPixmap data, cv::Scalar from, cv::Scalar to);
 	~ShapeDetectorTask();
 
 protected:
@@ -19,5 +23,7 @@ signals:
 	void result(QPixmap data);
 
 private:
-	const QPixmap* m_data;
+	QPixmap m_data;
+	cv::Scalar m_from;
+	cv::Scalar m_to;
 };

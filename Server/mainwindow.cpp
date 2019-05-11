@@ -51,15 +51,17 @@ void MainWindow::receiveFrame(QPixmap frame, QByteArray data)
 {
 	m_ui.frameWindow->setPixmap(frame);
 
-	findPattern(frame);
-	//TODO cut image on several pieces and send on to a particular device 
-
 	if (m_isDoneSetup || m_ui.doneSetup->isChecked())
 	{
 		for(auto i = 0; i < m_ui.clientsBox->count(); i++)
 		{
 			sendDataTCP(data, m_ui.clientsBox->itemText(i));
 		}
+	}
+	else
+	{
+		findContours(frame);
+		//TODO cut image on several pieces and send on to a particular device 
 	}
 }
 
@@ -99,48 +101,27 @@ void MainWindow::setUpClients()
 
 void MainWindow::tuneClients()
 {
-	auto frame = m_ui.frameWindow->pixmap();
-
-	if (frame != nullptr)
-	{
-		auto* task = new ShapeDetectorTask(frame);
-		task->setAutoDelete(true);
-		connect(task, &ShapeDetectorTask::result, this, [&](QPixmap data)
-		{
-			QPixmap scaledG = data.scaled(m_ui.greenWindow->width(), m_ui.greenWindow->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
-			m_ui.greenWindow->setPixmap(scaledG);
-		}
-		, Qt::QueuedConnection);
-		QThreadPool::globalInstance()->start(task);
-	}
+	
 }
 
-void MainWindow::findPattern(QPixmap img)
+void MainWindow::findContours(QPixmap frame)
 {
-	QColor fromR = QColor(m_redTabWidget->getFromColor());
-	QColor toR = QColor(m_redTabWidget->getToColor());
-	QColor fromG = QColor(m_greenTabWidget->getFromColor());
-	QColor toG = QColor(m_greenTabWidget->getToColor());
-	
-	FindPatternTask* task = new FindPatternTask
-	(
-		img
-		, cv::Scalar(fromR.red(), fromR.green(), fromR.blue())
-		, cv::Scalar(toR.red(), toR.green(), toR.blue())
-		, cv::Scalar(fromG.red(), fromG.green(), fromG.blue())
-		, cv::Scalar(toG.red(), toG.green(), toG.blue())
-	);
+	QColor from = QColor(m_redTabWidget->getFromColor());
+	QColor to = QColor(m_redTabWidget->getToColor());
 
+	auto* task = new ShapeDetectorTask
+	(
+		frame
+		, cv::Scalar(from.red(), from.green(), from.blue())
+		, cv::Scalar(to.red(), to.green(), to.blue())
+	);
 	task->setAutoDelete(true);
-	connect(task, &FindPatternTask::result, this, [&](QPixmap red, QPixmap green)
+	connect(task, &ShapeDetectorTask::result, this, [&](QPixmap data)
 	{
-		QPixmap scaledR = red.scaled(m_ui.redWindow->width(), m_ui.redWindow->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
-		m_ui.redWindow->setPixmap(scaledR);
-		//QPixmap scaledG = green.scaled(m_ui.greenWindow->width(), m_ui.greenWindow->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
-		//m_ui.greenWindow->setPixmap(scaledG);
+		QPixmap scaledG = data.scaled(m_ui.alphaWindow->width(), m_ui.alphaWindow->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
+		m_ui.alphaWindow->setPixmap(scaledG);
 	}
 	, Qt::QueuedConnection);
-
 	QThreadPool::globalInstance()->start(task);
 }
 

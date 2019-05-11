@@ -42,8 +42,7 @@ public:
     QHBoxLayout *horizontalLayout_2;
     QLabel *frameWindow;
     QGridLayout *gridLayout;
-    QLabel *redWindow;
-    QLabel *greenWindow;
+    QLabel *alphaWindow;
     QFrame *line_2;
     QHBoxLayout *horizontalLayout_5;
     QVBoxLayout *verticalLayout_5;
@@ -76,7 +75,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(1041, 812);
+        MainWindow->resize(1306, 812);
         actionStartServer = new QAction(MainWindow);
         actionStartServer->setObjectName(QString::fromUtf8("actionStartServer"));
         actionStopServer = new QAction(MainWindow);
@@ -94,8 +93,13 @@ public:
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
         frameWindow = new QLabel(centralwidget);
         frameWindow->setObjectName(QString::fromUtf8("frameWindow"));
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(frameWindow->sizePolicy().hasHeightForWidth());
+        frameWindow->setSizePolicy(sizePolicy);
         frameWindow->setMinimumSize(QSize(640, 360));
-        frameWindow->setMaximumSize(QSize(720, 360));
+        frameWindow->setMaximumSize(QSize(640, 360));
         frameWindow->setFrameShape(QFrame::Box);
         frameWindow->setFrameShadow(QFrame::Plain);
         frameWindow->setWordWrap(true);
@@ -105,22 +109,14 @@ public:
         gridLayout = new QGridLayout();
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         gridLayout->setHorizontalSpacing(0);
-        redWindow = new QLabel(centralwidget);
-        redWindow->setObjectName(QString::fromUtf8("redWindow"));
-        redWindow->setMinimumSize(QSize(0, 320));
-        redWindow->setMaximumSize(QSize(320, 16777215));
-        redWindow->setFrameShape(QFrame::Box);
-        redWindow->setWordWrap(true);
+        alphaWindow = new QLabel(centralwidget);
+        alphaWindow->setObjectName(QString::fromUtf8("alphaWindow"));
+        alphaWindow->setMinimumSize(QSize(640, 360));
+        alphaWindow->setMaximumSize(QSize(640, 360));
+        alphaWindow->setFrameShape(QFrame::Box);
+        alphaWindow->setWordWrap(true);
 
-        gridLayout->addWidget(redWindow, 0, 0, 1, 1);
-
-        greenWindow = new QLabel(centralwidget);
-        greenWindow->setObjectName(QString::fromUtf8("greenWindow"));
-        greenWindow->setMaximumSize(QSize(320, 16777215));
-        greenWindow->setFrameShape(QFrame::Box);
-        greenWindow->setWordWrap(true);
-
-        gridLayout->addWidget(greenWindow, 0, 1, 1, 1);
+        gridLayout->addWidget(alphaWindow, 0, 0, 1, 1);
 
 
         horizontalLayout_2->addLayout(gridLayout);
@@ -251,7 +247,7 @@ public:
         MainWindow->setStatusBar(statusbar);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1041, 26));
+        menubar->setGeometry(QRect(0, 0, 1306, 26));
         menuNetwork = new QMenu(menubar);
         menuNetwork->setObjectName(QString::fromUtf8("menuNetwork"));
         menuFile = new QMenu(menubar);
@@ -281,8 +277,7 @@ public:
         actionExit->setText(QApplication::translate("MainWindow", "Exit", nullptr));
         actionClientsList->setText(QApplication::translate("MainWindow", "Clients list", nullptr));
         frameWindow->setText(QString());
-        redWindow->setText(QString());
-        greenWindow->setText(QString());
+        alphaWindow->setText(QString());
         label_3->setText(QApplication::translate("MainWindow", "Client", nullptr));
         label_4->setText(QApplication::translate("MainWindow", "Command", nullptr));
         doneSetup->setText(QApplication::translate("MainWindow", "Done setup", nullptr));

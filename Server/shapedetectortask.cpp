@@ -1,13 +1,13 @@
 #include "shapedetectortask.h"
-
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
-
 #include "findpatterntask.h"
 
-ShapeDetectorTask::ShapeDetectorTask(const QPixmap* data)
+cv::RNG rng(12345);
+
+ShapeDetectorTask::ShapeDetectorTask(QPixmap data, cv::Scalar from, cv::Scalar to)
 	: QRunnable()
 	, m_data(data)
+	, m_from(from)
+	, m_to(to)
 {
 }
 
@@ -21,9 +21,9 @@ void ShapeDetectorTask::run()
 	auto maxThresh = 255;
 
 	/// Load source image and convert it to gray
-	auto srcImg = qImage2mat(m_data->toImage());
+	auto srcImg = qImage2mat(m_data.toImage());
 	cv::Mat converted;
-	inRange(srcImg, cv::Scalar(200, 0, 0), cv::Scalar(255, 170, 210), converted);
+	inRange(srcImg, m_from, m_to, converted);
 	cv::blur(converted, converted, cv::Size(3, 3));
 
 	cv::Mat cannyOutput;
@@ -35,11 +35,44 @@ void ShapeDetectorTask::run()
 	/// Find contours
 	cv::findContours(cannyOutput, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
 
+	std::vector<std::vector<cv::Point>> smoothCon;
+	smoothCon.resize(contours.size());
+	for (size_t k = 0; k < contours.size(); k++)
+	{
+		approxPolyDP(cv::Mat(contours[k]), smoothCon[k], 0.01, true);
+	}
+
 	/// Draw contours
 	cv::Mat drawing = cv::Mat::zeros(cannyOutput.size(), CV_8UC3);
-	for (int i = 0; i < contours.size(); i++)
+	for (int i = 0; i < smoothCon.size(); i++)
 	{
-		cv::drawContours(drawing, contours, i, cv::Scalar(255, 255, 255), 2, 8, hierarchy, 0, cv::Point());
+		cv::drawContours(drawing, smoothCon, i, cv::Scalar(255, 255, 255), 2, 8, hierarchy, 0, cv::Point());
+	}
+
+	cv::Mat gray;
+	cvtColor(drawing, gray, cv::COLOR_BGR2GRAY);
+	std::vector<cv::Point2f> corners;
+	cv::blur(gray, gray, cv::Size(3, 3));
+
+	int maxCorners = 8;
+	double qualityLevel = 0.01;
+	double minDistance = 10;
+	int blockSize = 15;
+	bool useHarrisDetector = false;
+	double k = 0.04;
+	goodFeaturesToTrack(gray,
+		corners,
+		maxCorners,
+		qualityLevel,
+		minDistance,
+		cv::Mat(),
+		blockSize,
+		useHarrisDetector,
+		k);
+
+	for (int i = 0; i < corners.size(); i++)
+	{
+		cv::circle(drawing, corners[i], 8, cv::Scalar(0, 255, 0), -1, 8, 0);
 	}
 
 	auto res = mat2qImage(drawing).rgbSwapped();

@@ -11,7 +11,7 @@ class VideoGrabber : public QObject
 	Q_OBJECT
 
 public:
-	VideoGrabber(QObject *parent = 0, int device = 1);
+	VideoGrabber(QObject *parent = 0, int device = 0);
 	~VideoGrabber();
 
 	bool isOpened();

@@ -43,8 +43,7 @@ private slots:
 	
 	void setUpClients();
 	void tuneClients();
-
-	void findPattern(QPixmap img);
+	void findContours(QPixmap frame);
 
 private:
 	Ui::MainWindow m_ui;
