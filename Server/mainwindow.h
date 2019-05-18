@@ -54,8 +54,9 @@ private:
 	std::unique_ptr<QThread> m_thread;
 	std::unique_ptr<QTimer> m_timer;
 
-	SliderTabWidget* m_redTabWidget;
-	SliderTabWidget* m_greenTabWidget;
+	SliderTabWidget* m_colorsAdjusterWidget;
 
 	bool m_isDoneSetup;
+	bool m_isShapeDetectorTaskFinished;
+	QVector<QVector<QPoint>> m_shapes;
 };

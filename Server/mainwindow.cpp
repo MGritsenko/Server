@@ -14,6 +14,7 @@
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 	, m_isDoneSetup(false)
+	, m_isShapeDetectorTaskFinished(true)
 {
 	init();
 	initVideoGrabber();
@@ -106,23 +107,33 @@ void MainWindow::tuneClients()
 
 void MainWindow::findContours(QPixmap frame)
 {
-	QColor from = QColor(m_redTabWidget->getFromColor());
-	QColor to = QColor(m_redTabWidget->getToColor());
-
-	auto* task = new ShapeDetectorTask
-	(
-		frame
-		, cv::Scalar(from.red(), from.green(), from.blue())
-		, cv::Scalar(to.red(), to.green(), to.blue())
-	);
-	task->setAutoDelete(true);
-	connect(task, &ShapeDetectorTask::result, this, [&](QPixmap data)
+	if (m_isShapeDetectorTaskFinished)
 	{
-		QPixmap scaledG = data.scaled(m_ui.alphaWindow->width(), m_ui.alphaWindow->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
-		m_ui.alphaWindow->setPixmap(scaledG);
+		m_isShapeDetectorTaskFinished = false;
+
+		QColor from = QColor(m_colorsAdjusterWidget->getFromColor());
+		QColor to = QColor(m_colorsAdjusterWidget->getToColor());
+
+		auto* task = new ShapeDetectorTask
+		(
+			frame
+			, cv::Scalar(from.red(), from.green(), from.blue())
+			, cv::Scalar(to.red(), to.green(), to.blue())
+			, 2//m_clientsListWidget->clients()
+		);
+		task->setAutoDelete(true);
+		connect(task, &ShapeDetectorTask::result, this, [&](QPixmap data, QVector<QVector<QPoint>> shapes)
+		{
+			m_isShapeDetectorTaskFinished = true;
+			
+			m_shapes = shapes;
+
+			QPixmap scaledG = data.scaled(m_ui.alphaWindow->width(), m_ui.alphaWindow->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
+			m_ui.alphaWindow->setPixmap(scaledG);
+		}
+		, Qt::QueuedConnection);
+		QThreadPool::globalInstance()->start(task);
 	}
-	, Qt::QueuedConnection);
-	QThreadPool::globalInstance()->start(task);
 }
 
 void MainWindow::closeConnection()
@@ -184,6 +195,6 @@ void MainWindow::initSetUpBlock()
 
 void MainWindow::initTabWidget()
 {
-	m_redTabWidget = new SliderTabWidget(this, QVector<int>{0, 234, 0, 255, 255, 255});
-	m_ui.tabWidget->addTab(m_redTabWidget, "Green");
+	m_colorsAdjusterWidget = new SliderTabWidget(this, QVector<int>{0, 146, 0, 255, 255, 159});
+	m_ui.tabWidget->addTab(m_colorsAdjusterWidget, "Green");
 }

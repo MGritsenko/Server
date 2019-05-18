@@ -3,11 +3,12 @@
 
 cv::RNG rng(12345);
 
-ShapeDetectorTask::ShapeDetectorTask(QPixmap data, cv::Scalar from, cv::Scalar to)
+ShapeDetectorTask::ShapeDetectorTask(QPixmap data, cv::Scalar from, cv::Scalar to, int maxCorners)
 	: QRunnable()
 	, m_data(data)
 	, m_from(from)
 	, m_to(to)
+	, m_devicesConnected(maxCorners)
 {
 }
 
@@ -51,18 +52,18 @@ void ShapeDetectorTask::run()
 
 	cv::Mat gray;
 	cvtColor(drawing, gray, cv::COLOR_BGR2GRAY);
-	std::vector<cv::Point2f> corners;
 	cv::blur(gray, gray, cv::Size(3, 3));
 
-	int maxCorners = 8;
+	int shapeCorners = 4;
 	double qualityLevel = 0.01;
 	double minDistance = 10;
 	int blockSize = 15;
 	bool useHarrisDetector = false;
 	double k = 0.04;
+	std::vector<cv::Point2f> corners;
 	goodFeaturesToTrack(gray,
 		corners,
-		maxCorners,
+		m_devicesConnected * shapeCorners,
 		qualityLevel,
 		minDistance,
 		cv::Mat(),
@@ -75,6 +76,28 @@ void ShapeDetectorTask::run()
 		cv::circle(drawing, corners[i], 8, cv::Scalar(0, 255, 0), -1, 8, 0);
 	}
 
+	std::sort(corners.begin(), corners.end(), [](auto& first, auto& second)
+	{
+		return first.y < second.y;
+	});
+	std::sort(corners.begin(), corners.end(), [](auto& first, auto& second)
+	{
+		return first.x < second.x;
+	});
+
+	QVector<QVector<QPoint>> shapes;
+	shapes.resize(m_devicesConnected);
+
+	for (int i = 0, j = 0; j < corners.size(); j++)
+	{
+		shapes[i].push_back(QPoint(corners[j].x, corners[j].y));
+		
+		if (j != 0 && (j + 1) % shapeCorners == 0)
+		{
+			i++;
+		}
+	}
+
 	auto res = mat2qImage(drawing).rgbSwapped();
-	emit result(QPixmap::fromImage(res));
+	emit result(QPixmap::fromImage(res), shapes);
 }
