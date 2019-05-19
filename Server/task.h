@@ -26,13 +26,13 @@ enum class Colors
 	BLACK
 };
 
-class Task : public QObject, public QRunnable
+class SendColorsTask : public QObject, public QRunnable
 {
 	Q_OBJECT
 
 public:
-	Task(int width, int height, int color, bool isColor = true);
-	~Task();
+	SendColorsTask(int width, int height, int color, bool isColor = true);
+	~SendColorsTask();
 
 signals:
 	void result(QByteArray data);

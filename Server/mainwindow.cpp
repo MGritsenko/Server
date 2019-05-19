@@ -7,6 +7,7 @@
 #include "findpatterntask.h"
 #include "slidertabwidget.h"
 #include "shapedetectortask.h"
+#include "cropimagetask.h"
 
 #include <QThreadPool>
 #include <QBuffer>
@@ -15,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 	, m_isDoneSetup(false)
 	, m_isShapeDetectorTaskFinished(true)
+	, m_iscropImageAndSendFinished(true)
 {
 	init();
 	initVideoGrabber();
@@ -54,15 +56,11 @@ void MainWindow::receiveFrame(QPixmap frame, QByteArray data)
 
 	if (m_isDoneSetup || m_ui.doneSetup->isChecked())
 	{
-		for(auto i = 0; i < m_ui.clientsBox->count(); i++)
-		{
-			sendDataTCP(data, m_ui.clientsBox->itemText(i));
-		}
+		cropImageAndSend();
 	}
 	else
 	{
 		findContours(frame);
-		//TODO cut image on several pieces and send on to a particular device 
 	}
 }
 
@@ -89,9 +87,9 @@ void MainWindow::setUpClients()
 	{
 		const auto receiverIp = m_ui.clientsBox->itemText(i);
 
-		Task* task = new Task(1080, 1920, 1);
+		SendColorsTask* task = new SendColorsTask(1080, 1920, 1);
 		task->setAutoDelete(true);
-		connect(task, &Task::result, this, [&, receiverIp](QByteArray data)
+		connect(task, &SendColorsTask::result, this, [&, receiverIp](QByteArray data)
 		{
 			sendDataTCP(data, receiverIp);
 		}
@@ -102,7 +100,22 @@ void MainWindow::setUpClients()
 
 void MainWindow::tuneClients()
 {
-	
+	if (m_shapes.isEmpty())
+	{
+		return;
+	}
+
+	CropImageTask* task = new CropImageTask(m_shapes, *m_ui.frameWindow->pixmap());
+	task->setAutoDelete(true);
+	connect(task, &CropImageTask::result, this, [&](QVector<QPixmap> images, QVector<QByteArray> data)
+	{
+		m_cropedImages = images;
+		m_cropedData = data;
+
+	}
+	, Qt::QueuedConnection);
+
+	QThreadPool::globalInstance()->start(task);
 }
 
 void MainWindow::findContours(QPixmap frame)
@@ -197,4 +210,32 @@ void MainWindow::initTabWidget()
 {
 	m_colorsAdjusterWidget = new SliderTabWidget(this, QVector<int>{0, 146, 0, 255, 255, 159});
 	m_ui.tabWidget->addTab(m_colorsAdjusterWidget, "Green");
+}
+
+void MainWindow::cropImageAndSend()
+{
+	if (m_iscropImageAndSendFinished)
+	{
+		m_iscropImageAndSendFinished = false;
+
+		CropImageTask* task = new CropImageTask(m_shapes, *m_ui.frameWindow->pixmap());
+		task->setAutoDelete(true);
+		connect(task, &CropImageTask::result, this, [&](QVector<QPixmap> images, QVector<QByteArray> data)
+		{
+			m_cropedImages = images;
+			m_cropedData = data;
+
+			for (auto i = 0; i < m_ui.clientsBox->count(); i++)
+			{
+				sendDataTCP(m_cropedData[i], m_ui.clientsBox->itemText(i));
+			}
+
+			m_iscropImageAndSendFinished = true;
+
+			QPixmap scaledG = m_cropedImages[0].scaled(m_ui.alphaWindow->width(), m_ui.alphaWindow->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
+			m_ui.alphaWindow->setPixmap(scaledG);
+		}
+		, Qt::QueuedConnection);
+		QThreadPool::globalInstance()->start(task);
+	}
 }

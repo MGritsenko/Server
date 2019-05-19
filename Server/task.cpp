@@ -3,7 +3,7 @@
 #include <QPixmap>
 #include <QBuffer>
 
-Task::Task(int width, int height, int color, bool isColor)
+SendColorsTask::SendColorsTask(int width, int height, int color, bool isColor)
 	: QRunnable()
 	, m_width(width)
 	, m_height(height)
@@ -28,10 +28,10 @@ Task::Task(int width, int height, int color, bool isColor)
 	m_colors[Colors::YELLOW] = cv::Scalar(255, 255, 25);
 }
 
-Task::~Task()
+SendColorsTask::~SendColorsTask()
 {}
 
-void Task::run()
+void SendColorsTask::run()
 {
 	if (m_isColor)
 	{
@@ -43,7 +43,7 @@ void Task::run()
 	}
 }
 
-void Task::generateRect()
+void SendColorsTask::generateRect()
 {
 	cv::Mat img1(m_height, m_width, CV_8UC3, cv::Scalar(255, 0, 0));
 	cv::rectangle
@@ -65,7 +65,7 @@ void Task::generateRect()
 	emit result(bArray);
 }
 
-void Task::generateColor()
+void SendColorsTask::generateColor()
 {
 	cv::Mat img1(m_height, m_width, CV_8UC3, m_colors.value(m_color, cv::Scalar(0, 0, 0)));
 

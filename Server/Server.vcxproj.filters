@@ -60,6 +60,9 @@
     <ClCompile Include="shapedetectortask.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cropimagetask.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mainwindow.h">
@@ -87,6 +90,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="shapedetectortask.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="cropimagetask.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

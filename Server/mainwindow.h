@@ -30,6 +30,7 @@ private:
 	void initClientsList();
 	void initSetUpBlock();
 	void initTabWidget();
+	void cropImageAndSend();
 
 private slots:
 	void closeConnection();
@@ -58,5 +59,9 @@ private:
 
 	bool m_isDoneSetup;
 	bool m_isShapeDetectorTaskFinished;
+	bool m_iscropImageAndSendFinished;
 	QVector<QVector<QPoint>> m_shapes;
+
+	QVector<QPixmap> m_cropedImages;
+	QVector<QByteArray> m_cropedData;
 };
