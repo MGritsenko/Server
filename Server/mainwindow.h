@@ -26,7 +26,8 @@ public:
 
 private:
 	void init();
-	void initVideoGrabber();
+	void initVideoGrabberCamera();
+	void initVideoGrabberFile();
 	void initClientsList();
 	void initSetUpBlock();
 	void initTabWidget();
@@ -35,7 +36,9 @@ private:
 private slots:
 	void closeConnection();
 	void createConnection();
-	void closeVideoGrabber();
+	void closeVideoGrabberCamera();
+	void closeVideoGrabberFile();
+	void openFileDialog();
 
 	void onDataReady(QByteArray data);
 	void receiveFrame(QPixmap frame, QByteArray data);
@@ -51,9 +54,12 @@ private:
 
 	std::unique_ptr<ServerThreadPool> m_server;
 	std::unique_ptr<ClientsListWidget> m_clientsListWidget;
-	std::unique_ptr<VideoGrabber> m_videoGrabberWorker;
-	std::unique_ptr<QThread> m_thread;
-	std::unique_ptr<QTimer> m_timer;
+	std::unique_ptr<VideoGrabber> m_videoGrabberCameraWorker;
+	std::unique_ptr<VideoGrabber> m_videoGrabberFileWorker;
+	std::unique_ptr<QThread> m_threadCamera;
+	std::unique_ptr<QThread> m_threadFile;
+	std::unique_ptr<QTimer> m_timerCamera;
+	std::unique_ptr<QTimer> m_timerFile;
 
 	SliderTabWidget* m_colorsAdjusterWidget;
 
@@ -64,4 +70,6 @@ private:
 
 	QVector<QPixmap> m_cropedImages;
 	QVector<QByteArray> m_cropedData;
+
+	QString m_fileName;
 };

@@ -58,8 +58,8 @@ void CropImageTask::run()
 		buffer.open(QIODevice::WriteOnly);
 		pixmap.save(&buffer, "JPG");
 
-		images.push_back(pixmap);
-		byteImages.push_back(bArray);
+		images.push_front(pixmap);
+		byteImages.push_front(bArray);
 	}
 
 	emit result(images, byteImages);

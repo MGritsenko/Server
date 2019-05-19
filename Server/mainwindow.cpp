@@ -11,6 +11,9 @@
 
 #include <QThreadPool>
 #include <QBuffer>
+#include <QFileDialog>
+#include <QStandardPaths>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -19,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
 	, m_iscropImageAndSendFinished(true)
 {
 	init();
-	initVideoGrabber();
+	initVideoGrabberCamera();
 	initClientsList();
 	initSetUpBlock();
 	initTabWidget();
@@ -33,13 +36,33 @@ void MainWindow::createConnection()
 	connect(m_server.get(), &ServerThreadPool::dataReady, this, &MainWindow::onDataReady);
 }
 
-void MainWindow::closeVideoGrabber()
+void MainWindow::closeVideoGrabberCamera()
 {
-	m_thread->quit();
+	m_threadCamera->quit();
 
-	while (!m_thread->isFinished()){}
+	while (!m_threadCamera->isFinished()){}
 
-	m_videoGrabberWorker.reset();
+	m_videoGrabberCameraWorker.reset();
+}
+
+void MainWindow::closeVideoGrabberFile()
+{
+	m_threadFile->quit();
+
+	while (!m_threadFile->isFinished()) {}
+
+	m_videoGrabberFileWorker.reset();
+}
+
+void MainWindow::openFileDialog()
+{
+	 m_fileName = QFileDialog::getOpenFileName
+	 (
+		this
+		, "Open File"
+		, "C:/Users/<USER>/Documents"
+		, "Video files (*.avi)"
+	);
 }
 
 void MainWindow::onDataReady(QByteArray data)
@@ -157,7 +180,7 @@ void MainWindow::closeConnection()
 MainWindow::~MainWindow()
 {
 	closeConnection();
-	closeVideoGrabber();
+	closeVideoGrabberCamera();
 }
 
 void MainWindow::init()
@@ -171,26 +194,56 @@ void MainWindow::init()
 	connect(m_ui.actionStopServer, &QAction::triggered, this, &MainWindow::closeConnection);
 
 	connect(m_ui.actionExit, &QAction::triggered, this, &MainWindow::close);
+	connect(m_ui.actionOpenFile, &QAction::triggered, this, &MainWindow::openFileDialog);
 }
 
-void MainWindow::initVideoGrabber()
+void MainWindow::initVideoGrabberCamera()
 {
-	m_videoGrabberWorker.reset(new VideoGrabber());
-	m_thread.reset(new QThread);
-	m_timer.reset(new QTimer);
+	m_videoGrabberCameraWorker.reset(new VideoGrabber(nullptr, 0));
+	m_threadCamera.reset(new QThread);
+	m_timerCamera.reset(new QTimer);
 
-	m_timer->setInterval(1000/30);
-	m_videoGrabberWorker->moveToThread(m_thread.get());
-	m_timer->start();
-	m_timer->moveToThread(m_thread.get());
+	m_timerCamera->setInterval(1000/30);
+	m_videoGrabberCameraWorker->moveToThread(m_threadCamera.get());
+	m_timerCamera->start();
+	m_timerCamera->moveToThread(m_threadCamera.get());
 
-	connect(m_thread.get(), &QThread::finished, m_videoGrabberWorker.get(), &VideoGrabber::deleteLater);
-	connect(m_thread.get(), &QThread::finished, m_timer.get(), &QTimer::deleteLater);
+	connect(m_threadCamera.get(), &QThread::finished, m_videoGrabberCameraWorker.get(), &VideoGrabber::deleteLater);
+	connect(m_threadCamera.get(), &QThread::finished, m_timerCamera.get(), &QTimer::deleteLater);
 
-	connect(m_timer.get(), &QTimer::timeout, m_videoGrabberWorker.get(), &VideoGrabber::grabFrame);
-	connect(m_videoGrabberWorker.get(), &VideoGrabber::sendFrame, this, &MainWindow::receiveFrame, Qt::QueuedConnection);
+	connect(m_timerCamera.get(), &QTimer::timeout, m_videoGrabberCameraWorker.get(), &VideoGrabber::grabFrameFromCamera);
+	connect(m_videoGrabberCameraWorker.get(), &VideoGrabber::sendFrame, this, &MainWindow::receiveFrame, Qt::QueuedConnection);
 	
-	m_thread->start();
+	m_threadCamera->start();
+}
+
+void MainWindow::initVideoGrabberFile()
+{
+	if (m_fileName.isEmpty())
+	{
+		QMessageBox::information(this, "Message", "No file has been selected!!");
+
+		return;
+	}
+
+	m_timerCamera->stop();
+
+	m_videoGrabberFileWorker.reset(new VideoGrabber(m_fileName));
+	m_threadFile.reset(new QThread);
+	m_timerFile.reset(new QTimer);
+
+	m_timerFile->setInterval(1000 / 30);
+	m_videoGrabberFileWorker->moveToThread(m_threadFile.get());
+	m_timerFile->start();
+	m_timerFile->moveToThread(m_threadFile.get());
+
+	connect(m_threadFile.get(), &QThread::finished, m_videoGrabberFileWorker.get(), &VideoGrabber::deleteLater);
+	connect(m_threadFile.get(), &QThread::finished, m_timerFile.get(), &QTimer::deleteLater);
+
+	connect(m_timerFile.get(), &QTimer::timeout, m_videoGrabberFileWorker.get(), &VideoGrabber::grabFrameFromFile);
+	connect(m_videoGrabberFileWorker.get(), &VideoGrabber::sendFrame, this, &MainWindow::receiveFrame, Qt::QueuedConnection);
+
+	m_threadFile->start();
 }
 
 void MainWindow::initClientsList()
@@ -202,7 +255,8 @@ void MainWindow::initClientsList()
 void MainWindow::initSetUpBlock()
 {
 	m_ui.commandsBox->addItem(QString::number(static_cast<int>(CommandType::SEND_IDENT_IMG)));
-	connect(m_ui.sendButton, &QPushButton::clicked, this, &MainWindow::setUpClients);
+	connect(m_ui.sendColorButton, &QPushButton::clicked, this, &MainWindow::setUpClients);
+	connect(m_ui.sendVideoButton, &QPushButton::clicked, this, &MainWindow::initVideoGrabberFile);
 	connect(m_ui.tuneButton, &QPushButton::clicked, this, &MainWindow::tuneClients);
 }
 

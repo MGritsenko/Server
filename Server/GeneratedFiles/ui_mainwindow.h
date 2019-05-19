@@ -37,6 +37,7 @@ public:
     QAction *actionStopServer;
     QAction *actionExit;
     QAction *actionClientsList;
+    QAction *actionOpenFile;
     QWidget *centralwidget;
     QVBoxLayout *verticalLayout_4;
     QHBoxLayout *horizontalLayout_2;
@@ -59,8 +60,9 @@ public:
     QSpacerItem *horizontalSpacer_2;
     QCheckBox *doneSetup;
     QHBoxLayout *horizontalLayout_4;
-    QPushButton *sendButton;
+    QPushButton *sendColorButton;
     QPushButton *tuneButton;
+    QPushButton *sendVideoButton;
     QFrame *line_3;
     QHBoxLayout *horizontalLayout;
     QLabel *label;
@@ -75,7 +77,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(1306, 812);
+        MainWindow->resize(1306, 773);
         actionStartServer = new QAction(MainWindow);
         actionStartServer->setObjectName(QString::fromUtf8("actionStartServer"));
         actionStopServer = new QAction(MainWindow);
@@ -84,6 +86,8 @@ public:
         actionExit->setObjectName(QString::fromUtf8("actionExit"));
         actionClientsList = new QAction(MainWindow);
         actionClientsList->setObjectName(QString::fromUtf8("actionClientsList"));
+        actionOpenFile = new QAction(MainWindow);
+        actionOpenFile->setObjectName(QString::fromUtf8("actionOpenFile"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         verticalLayout_4 = new QVBoxLayout(centralwidget);
@@ -196,15 +200,20 @@ public:
 
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
-        sendButton = new QPushButton(centralwidget);
-        sendButton->setObjectName(QString::fromUtf8("sendButton"));
+        sendColorButton = new QPushButton(centralwidget);
+        sendColorButton->setObjectName(QString::fromUtf8("sendColorButton"));
 
-        horizontalLayout_4->addWidget(sendButton);
+        horizontalLayout_4->addWidget(sendColorButton);
 
         tuneButton = new QPushButton(centralwidget);
         tuneButton->setObjectName(QString::fromUtf8("tuneButton"));
 
         horizontalLayout_4->addWidget(tuneButton);
+
+        sendVideoButton = new QPushButton(centralwidget);
+        sendVideoButton->setObjectName(QString::fromUtf8("sendVideoButton"));
+
+        horizontalLayout_4->addWidget(sendVideoButton);
 
 
         verticalLayout_3->addLayout(horizontalLayout_4);
@@ -259,6 +268,8 @@ public:
         menuNetwork->addAction(actionStartServer);
         menuNetwork->addAction(actionStopServer);
         menuNetwork->addSeparator();
+        menuFile->addAction(actionOpenFile);
+        menuFile->addSeparator();
         menuFile->addAction(actionExit);
 
         retranslateUi(MainWindow);
@@ -276,13 +287,15 @@ public:
         actionStopServer->setText(QApplication::translate("MainWindow", "Stop server", nullptr));
         actionExit->setText(QApplication::translate("MainWindow", "Exit", nullptr));
         actionClientsList->setText(QApplication::translate("MainWindow", "Clients list", nullptr));
+        actionOpenFile->setText(QApplication::translate("MainWindow", "Open File", nullptr));
         frameWindow->setText(QString());
         alphaWindow->setText(QString());
         label_3->setText(QApplication::translate("MainWindow", "Client", nullptr));
         label_4->setText(QApplication::translate("MainWindow", "Command", nullptr));
         doneSetup->setText(QApplication::translate("MainWindow", "Done setup", nullptr));
-        sendButton->setText(QApplication::translate("MainWindow", "SEND", nullptr));
-        tuneButton->setText(QApplication::translate("MainWindow", "TUNE", nullptr));
+        sendColorButton->setText(QApplication::translate("MainWindow", "SEND COLOR", nullptr));
+        tuneButton->setText(QApplication::translate("MainWindow", "GET PHONE AREAS", nullptr));
+        sendVideoButton->setText(QApplication::translate("MainWindow", "SEND VIDEO", nullptr));
         label->setText(QApplication::translate("MainWindow", "Clients connected", nullptr));
         label_2->setText(QApplication::translate("MainWindow", "0", nullptr));
         menuNetwork->setTitle(QApplication::translate("MainWindow", "Network", nullptr));
