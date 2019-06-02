@@ -9,8 +9,10 @@
 
 enum class Colors
 {
-	RED,
 	GREEN,
+	BLACK,
+	WHITE,
+	RED,
 	BLUE,
 	YELLOW,
 	ORANGE,
@@ -21,9 +23,7 @@ enum class Colors
 	BROWN,
 	MAROON,
 	NAVY,
-	GREY,
-	WHITE,
-	BLACK
+	GREY
 };
 
 class SendColorsTask : public QObject, public QRunnable

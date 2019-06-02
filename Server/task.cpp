@@ -11,11 +11,12 @@ SendColorsTask::SendColorsTask(int width, int height, int color, bool isColor)
 	, m_color(static_cast<Colors>(color))
 
 {
+	m_colors[Colors::GREEN] = cv::Scalar(0, 255, 0);
 	m_colors[Colors::BLACK] = cv::Scalar(0, 0, 0);
+	m_colors[Colors::WHITE] = cv::Scalar(255, 255, 255);
 	m_colors[Colors::BLUE] = cv::Scalar(0, 130, 200);
 	m_colors[Colors::BROWN] = cv::Scalar(170, 110, 40);
 	m_colors[Colors::CYAN] = cv::Scalar(70, 240, 240);
-	m_colors[Colors::GREEN] = cv::Scalar(0, 255, 0);
 	m_colors[Colors::GREY] = cv::Scalar(128, 128, 128);
 	m_colors[Colors::MAGENTA] = cv::Scalar(240, 50, 230);
 	m_colors[Colors::MAROON] = cv::Scalar(128, 0, 0);
@@ -24,7 +25,6 @@ SendColorsTask::SendColorsTask(int width, int height, int color, bool isColor)
 	m_colors[Colors::PURPLE] = cv::Scalar(145, 30, 180);
 	m_colors[Colors::RED] = cv::Scalar(230, 25, 75);
 	m_colors[Colors::TEAL] = cv::Scalar(0, 128, 128);
-	m_colors[Colors::WHITE] = cv::Scalar(255, 255, 255);
 	m_colors[Colors::YELLOW] = cv::Scalar(255, 255, 25);
 }
 

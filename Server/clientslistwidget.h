@@ -14,6 +14,7 @@ public:
 	~ClientsListWidget();
 
 	bool insertData(QString data);
+	void removeClients();
 
 	int clients() const;
 

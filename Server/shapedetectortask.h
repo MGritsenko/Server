@@ -29,5 +29,5 @@ private:
 	cv::Scalar m_from;
 	cv::Scalar m_to;
 
-	int m_devicesConnected;
+	int m_shapesToDetect;
 };

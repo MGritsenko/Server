@@ -30,6 +30,15 @@ QVariant ClientsListModel::data(const QModelIndex& index, int role) const
 	return QVariant();
 }
 
+bool ClientsListModel::removeRows(int row, int count, const QModelIndex &parent /* = QModelIndex() */)
+{
+	beginRemoveRows(parent, row, count - 1);
+	m_data.clear();
+	endRemoveRows();
+
+	return true;
+}
+
 bool ClientsListModel::insertData(QString data)
 {
 	if (!m_data.contains(qMakePair(data, data)))

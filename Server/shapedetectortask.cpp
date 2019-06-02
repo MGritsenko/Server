@@ -3,12 +3,12 @@
 
 cv::RNG rng(12345);
 
-ShapeDetectorTask::ShapeDetectorTask(QPixmap data, cv::Scalar from, cv::Scalar to, int maxCorners)
+ShapeDetectorTask::ShapeDetectorTask(QPixmap data, cv::Scalar from, cv::Scalar to, int shapesToDetect)
 	: QRunnable()
 	, m_data(data)
 	, m_from(from)
 	, m_to(to)
-	, m_devicesConnected(maxCorners)
+	, m_shapesToDetect(shapesToDetect)
 {
 }
 
@@ -63,7 +63,7 @@ void ShapeDetectorTask::run()
 	std::vector<cv::Point2f> corners;
 	goodFeaturesToTrack(gray,
 		corners,
-		m_devicesConnected * shapeCorners,
+		m_shapesToDetect * shapeCorners,
 		qualityLevel,
 		minDistance,
 		cv::Mat(),
@@ -86,7 +86,7 @@ void ShapeDetectorTask::run()
 	});
 
 	QVector<QVector<QPoint>> shapes;
-	shapes.resize(m_devicesConnected);
+	shapes.resize(m_shapesToDetect);
 
 	for (int i = 0, j = 0; j < corners.size(); j++)
 	{

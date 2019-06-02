@@ -72,4 +72,6 @@ private:
 	QVector<QByteArray> m_cropedData;
 
 	QString m_fileName;
+
+	int m_prevTunedDevice;
 };

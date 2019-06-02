@@ -69,6 +69,7 @@ void MainWindow::onDataReady(QByteArray data)
 {
 	if (m_clientsListWidget->insertData(data))
 	{
+		m_prevTunedDevice = -1;
 		m_ui.clientsBox->addItem(data);
 	}
 }
@@ -106,11 +107,23 @@ void MainWindow::setUpClients()
 {
 	const auto command = m_ui.commandsBox->currentText();
 
+	m_prevTunedDevice += 1;
+	if(m_prevTunedDevice >= m_clientsListWidget->clients())
+	{
+		m_prevTunedDevice = 0;
+	}
+
 	for (int i = 0; i < m_clientsListWidget->clients(); i++)
 	{
 		const auto receiverIp = m_ui.clientsBox->itemText(i);
 
-		SendColorsTask* task = new SendColorsTask(1080, 1920, 1);
+		int colorToSend = 1; //Black Color
+		if (m_prevTunedDevice == i)
+		{
+			colorToSend = 0; //Green Color
+		}
+
+		SendColorsTask* task = new SendColorsTask(1080, 1920, colorToSend);
 		task->setAutoDelete(true);
 		connect(task, &SendColorsTask::result, this, [&, receiverIp](QByteArray data)
 		{
@@ -155,7 +168,7 @@ void MainWindow::findContours(QPixmap frame)
 			frame
 			, cv::Scalar(from.red(), from.green(), from.blue())
 			, cv::Scalar(to.red(), to.green(), to.blue())
-			, 2//m_clientsListWidget->clients()
+			, 1//m_clientsListWidget->clients()
 		);
 		task->setAutoDelete(true);
 		connect(task, &ShapeDetectorTask::result, this, [&](QPixmap data, QVector<QVector<QPoint>> shapes)
@@ -175,6 +188,7 @@ void MainWindow::findContours(QPixmap frame)
 void MainWindow::closeConnection()
 {
 	m_server.reset();
+	m_clientsListWidget->removeClients();
 }
 
 MainWindow::~MainWindow()
