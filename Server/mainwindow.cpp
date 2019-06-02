@@ -115,7 +115,7 @@ void MainWindow::setUpClients()
 
 	for (int i = 0; i < m_clientsListWidget->clients(); i++)
 	{
-		const auto receiverIp = m_ui.clientsBox->itemText(i);
+		const auto receiverIp = m_clientsListWidget->data(i);//m_ui.clientsBox->itemText(i);
 
 		int colorToSend = 1; //Black Color
 		if (m_prevTunedDevice == i)
@@ -134,7 +134,7 @@ void MainWindow::setUpClients()
 	}
 }
 
-void MainWindow::tuneClients()
+void MainWindow::getPhoneAreas()
 {
 	if (m_shapes.isEmpty())
 	{
@@ -143,7 +143,7 @@ void MainWindow::tuneClients()
 
 	CropImageTask* task = new CropImageTask(m_shapes, *m_ui.frameWindow->pixmap());
 	task->setAutoDelete(true);
-	connect(task, &CropImageTask::result, this, [&](QVector<QPixmap> images, QVector<QByteArray> data)
+	connect(task, &CropImageTask::result, this, [&](QVector<QPair<QPixmap, QString>> images, QVector<QPair<QByteArray, QString>> data)
 	{
 		m_cropedImages = images;
 		m_cropedData = data;
@@ -171,11 +171,14 @@ void MainWindow::findContours(QPixmap frame)
 			, 1//m_clientsListWidget->clients()
 		);
 		task->setAutoDelete(true);
-		connect(task, &ShapeDetectorTask::result, this, [&](QPixmap data, QVector<QVector<QPoint>> shapes)
+		connect(task, &ShapeDetectorTask::result, this, [&](QPixmap data, QVector<QPoint> shapes)
 		{
 			m_isShapeDetectorTaskFinished = true;
 			
-			m_shapes = shapes;
+			if (m_prevTunedDevice >= 0 && m_clientsListWidget->clients() > 0)
+			{
+				m_shapes[m_clientsListWidget->data(m_prevTunedDevice)] = shapes;
+			}
 
 			QPixmap scaledG = data.scaled(m_ui.alphaWindow->width(), m_ui.alphaWindow->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
 			m_ui.alphaWindow->setPixmap(scaledG);
@@ -271,7 +274,7 @@ void MainWindow::initSetUpBlock()
 	m_ui.commandsBox->addItem(QString::number(static_cast<int>(CommandType::SEND_IDENT_IMG)));
 	connect(m_ui.sendColorButton, &QPushButton::clicked, this, &MainWindow::setUpClients);
 	connect(m_ui.sendVideoButton, &QPushButton::clicked, this, &MainWindow::initVideoGrabberFile);
-	connect(m_ui.tuneButton, &QPushButton::clicked, this, &MainWindow::tuneClients);
+	connect(m_ui.getPhoneAreasButton, &QPushButton::clicked, this, &MainWindow::getPhoneAreas);
 }
 
 void MainWindow::initTabWidget()
@@ -288,20 +291,25 @@ void MainWindow::cropImageAndSend()
 
 		CropImageTask* task = new CropImageTask(m_shapes, *m_ui.frameWindow->pixmap());
 		task->setAutoDelete(true);
-		connect(task, &CropImageTask::result, this, [&](QVector<QPixmap> images, QVector<QByteArray> data)
+		connect(task, &CropImageTask::result, this, [&](QVector<QPair<QPixmap, QString>> images, QVector<QPair<QByteArray, QString>> data)
 		{
 			m_cropedImages = images;
 			m_cropedData = data;
 
-			for (auto i = 0; i < m_ui.clientsBox->count(); i++)
+			/*for (auto i = 0; i < m_clientsListWidget->clients(); i++)
 			{
 				sendDataTCP(m_cropedData[i], m_ui.clientsBox->itemText(i));
+			}*/
+
+			for (const auto& cropedImageData : m_cropedData)
+			{
+				sendDataTCP(cropedImageData.first, cropedImageData.second);
 			}
 
 			m_iscropImageAndSendFinished = true;
 
-			QPixmap scaledG = m_cropedImages[0].scaled(m_ui.alphaWindow->width(), m_ui.alphaWindow->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
-			m_ui.alphaWindow->setPixmap(scaledG);
+			//QPixmap scaledG = m_cropedImages[0].scaled(m_ui.alphaWindow->width(), m_ui.alphaWindow->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
+			//m_ui.alphaWindow->setPixmap(scaledG);
 		}
 		, Qt::QueuedConnection);
 		QThreadPool::globalInstance()->start(task);

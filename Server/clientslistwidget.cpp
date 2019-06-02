@@ -32,6 +32,11 @@ void ClientsListWidget::removeClients()
 	}
 }
 
+QString ClientsListWidget::data(int index)
+{
+	return m_model->data(m_model->index(index, 0)).toString();
+}
+
 int ClientsListWidget::clients() const
 {
 	return m_model->rowCount();

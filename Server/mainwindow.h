@@ -46,7 +46,7 @@ private slots:
 	void sendDataTCP(QByteArray data, QString client);
 	
 	void setUpClients();
-	void tuneClients();
+	void getPhoneAreas();
 	void findContours(QPixmap frame);
 
 private:
@@ -66,10 +66,10 @@ private:
 	bool m_isDoneSetup;
 	bool m_isShapeDetectorTaskFinished;
 	bool m_iscropImageAndSendFinished;
-	QVector<QVector<QPoint>> m_shapes;
+	QMap<QString, QVector<QPoint>> m_shapes;
 
-	QVector<QPixmap> m_cropedImages;
-	QVector<QByteArray> m_cropedData;
+	QVector<QPair<QPixmap, QString>> m_cropedImages;
+	QVector<QPair<QByteArray, QString>> m_cropedData;
 
 	QString m_fileName;
 

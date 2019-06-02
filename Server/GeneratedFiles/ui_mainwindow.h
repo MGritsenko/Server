@@ -61,7 +61,7 @@ public:
     QCheckBox *doneSetup;
     QHBoxLayout *horizontalLayout_4;
     QPushButton *sendColorButton;
-    QPushButton *tuneButton;
+    QPushButton *getPhoneAreasButton;
     QPushButton *sendVideoButton;
     QFrame *line_3;
     QHBoxLayout *horizontalLayout;
@@ -205,10 +205,10 @@ public:
 
         horizontalLayout_4->addWidget(sendColorButton);
 
-        tuneButton = new QPushButton(centralwidget);
-        tuneButton->setObjectName(QString::fromUtf8("tuneButton"));
+        getPhoneAreasButton = new QPushButton(centralwidget);
+        getPhoneAreasButton->setObjectName(QString::fromUtf8("getPhoneAreasButton"));
 
-        horizontalLayout_4->addWidget(tuneButton);
+        horizontalLayout_4->addWidget(getPhoneAreasButton);
 
         sendVideoButton = new QPushButton(centralwidget);
         sendVideoButton->setObjectName(QString::fromUtf8("sendVideoButton"));
@@ -294,7 +294,7 @@ public:
         label_4->setText(QApplication::translate("MainWindow", "Command", nullptr));
         doneSetup->setText(QApplication::translate("MainWindow", "Done setup", nullptr));
         sendColorButton->setText(QApplication::translate("MainWindow", "SEND COLOR", nullptr));
-        tuneButton->setText(QApplication::translate("MainWindow", "GET PHONE AREAS", nullptr));
+        getPhoneAreasButton->setText(QApplication::translate("MainWindow", "GET PHONE AREAS", nullptr));
         sendVideoButton->setText(QApplication::translate("MainWindow", "SEND VIDEO", nullptr));
         label->setText(QApplication::translate("MainWindow", "Clients connected", nullptr));
         label_2->setText(QApplication::translate("MainWindow", "0", nullptr));

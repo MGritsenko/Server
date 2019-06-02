@@ -15,6 +15,7 @@ public:
 
 	bool insertData(QString data);
 	void removeClients();
+	QString data(int index);
 
 	int clients() const;
 

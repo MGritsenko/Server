@@ -85,17 +85,10 @@ void ShapeDetectorTask::run()
 		return first.x < second.x;
 	});
 
-	QVector<QVector<QPoint>> shapes;
-	shapes.resize(m_shapesToDetect);
-
-	for (int i = 0, j = 0; j < corners.size(); j++)
+	QVector<QPoint> shapes;
+	for (int j = 0; j < corners.size(); j++)
 	{
-		shapes[i].push_back(QPoint(corners[j].x, corners[j].y));
-		
-		if (j != 0 && (j + 1) % shapeCorners == 0)
-		{
-			i++;
-		}
+		shapes.push_back(QPoint(corners[j].x, corners[j].y));
 	}
 
 	auto res = mat2qImage(drawing).rgbSwapped();

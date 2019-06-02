@@ -22,7 +22,7 @@ protected:
 	virtual void run() override;
 
 signals:
-	void result(QPixmap data, QVector<QVector<QPoint>>);
+	void result(QPixmap data, QVector<QPoint>);
 
 private:
 	QPixmap m_data;
